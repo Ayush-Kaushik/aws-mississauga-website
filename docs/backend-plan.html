@@ -1,0 +1,360 @@
+<title>AWS Mississauga Backend Plan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: a working plan document in the website's palette. One reading column with a sticky contents rail on wide screens. */
+:root {
+  --bg: #faf8ff;
+  --panel: #ffffff;
+  --tint: #f1ecff;
+  --line: #e1d9f7;
+  --fg: #1a1233;
+  --muted: #5d5480;
+  --accent: #6d3fe0;
+  --amber: #b45309;
+  --amber-bg: #fff4e0;
+  --ok: #15803d;
+  --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body: "Figtree", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d0a1c; --panel: #1b1536; --tint: #15102b; --line: #2e2652;
+    --fg: #f1eefb; --muted: #a49cc4; --accent: #c4b0ff; --amber: #ffb547; --amber-bg: #2a1f10; --ok: #4ade80;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d0a1c; --panel: #1b1536; --tint: #15102b; --line: #2e2652;
+  --fg: #f1eefb; --muted: #a49cc4; --accent: #c4b0ff; --amber: #ffb547; --amber-bg: #2a1f10; --ok: #4ade80;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font: 400 1rem/1.65 var(--body); }
+a { color: var(--accent); }
+.page { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: clamp(2rem, 5vw, 3.5rem) 4rem; display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 3rem; }
+nav.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 1.5rem); align-self: start; display: grid; gap: .35rem; font-size: .88rem; }
+nav.toc b { font: 500 .7rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: .5rem; }
+nav.toc a { color: var(--muted); text-decoration: none; padding: .15rem 0; }
+nav.toc a:hover { color: var(--fg); }
+@media (max-width: 900px) { .page { grid-template-columns: 1fr; } nav.toc { display: none; } }
+main { min-width: 0; display: grid; gap: 3rem; }
+h1, h2, h3 { font-family: var(--display); line-height: 1.12; margin: 0; text-wrap: balance; letter-spacing: -0.015em; }
+h1 { font-size: clamp(2.1rem, 5vw, 3.1rem); font-weight: 800; }
+h2 { font-size: 1.65rem; font-weight: 800; }
+h3 { font-size: 1.1rem; font-weight: 600; }
+p, ul, ol { margin: 0; max-width: 68ch; }
+ul, ol { padding-left: 1.2rem; display: grid; gap: .35rem; }
+section { display: grid; gap: 1rem; scroll-margin-top: 1rem; }
+.eyebrow { font: 500 .72rem/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+.muted { color: var(--muted); }
+header.doc { display: grid; gap: 1rem; padding-bottom: 2rem; border-bottom: 1px solid var(--line); }
+.meta { display: flex; flex-wrap: wrap; gap: .4rem 1.25rem; font: 500 .78rem/1.4 var(--mono); color: var(--muted); }
+.callout { padding: 1.1rem 1.25rem; border-radius: 12px; background: var(--tint); border: 1px solid var(--line); display: grid; gap: .5rem; }
+.callout.warn { background: var(--amber-bg); border-color: color-mix(in srgb, var(--amber) 40%, transparent); }
+.callout b.k { font: 500 .7rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--amber); }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+@media (max-width: 760px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+.box { padding: 1.1rem 1.2rem; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); display: grid; gap: .45rem; align-content: start; min-width: 0; }
+.box p, .box li { color: var(--muted); font-size: .94rem; }
+.svc { font: 500 .74rem/1.4 var(--mono); color: var(--accent); }
+.diagram { padding: 1.25rem; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); overflow-x: auto; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+table { width: 100%; border-collapse: collapse; font-size: .92rem; min-width: 620px; }
+th, td { text-align: left; vertical-align: top; padding: .7rem .9rem; border-top: 1px solid var(--line); }
+thead th { border-top: 0; background: var(--tint); font: 500 .7rem/1.3 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+td code, p code, li code { font: 500 .82rem var(--mono); background: var(--tint); padding: .1rem .35rem; border-radius: 4px; }
+td:first-child { font-weight: 600; }
+.pill { display: inline-block; font: 500 .66rem/1 var(--mono); letter-spacing: .06em; padding: .3rem .45rem; border-radius: 5px; border: 1px solid currentColor; white-space: nowrap; }
+.pub { color: var(--ok); } .staff { color: var(--amber); } .mem { color: var(--accent); }
+.phases { display: grid; gap: 1rem; }
+.phase { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 1.25rem; padding: 1.25rem; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); }
+.phase .when { display: grid; gap: .3rem; align-content: start; }
+.phase .when b { font: 800 1.25rem/1.1 var(--display); }
+.phase .when span { font: 500 .72rem/1.4 var(--mono); color: var(--muted); }
+.phase .body { display: grid; gap: .6rem; min-width: 0; }
+.phase .body p.done { font-size: .9rem; color: var(--muted); }
+.phase .body p.done b { color: var(--ok); }
+@media (max-width: 640px) { .phase { grid-template-columns: 1fr; gap: .6rem; } }
+.checklist { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: .5rem 1.5rem; max-width: none; }
+.checklist li { display: flex; gap: .6rem; font-size: .94rem; }
+.checklist li::before { content: "✓"; color: var(--ok); font-weight: 700; }
+@media (max-width: 760px) { .checklist { grid-template-columns: 1fr; } }
+.decisions { list-style: none; padding: 0; display: grid; gap: .6rem; max-width: none; }
+.decisions li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1rem; padding: .85rem 1rem; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); align-items: center; }
+.decisions li span { font-size: .94rem; }
+.decisions li em { font-style: normal; font: 500 .7rem/1.3 var(--mono); color: var(--muted); text-align: right; }
+@media (max-width: 560px) { .decisions li { grid-template-columns: 1fr; } .decisions li em { text-align: left; } }
+</style>
+
+<div class="page">
+  <nav class="toc" aria-label="Contents">
+    <b>Contents</b>
+    <a href="#summary">Summary</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#services">Services</a>
+    <a href="#requirements">Requirements map</a>
+    <a href="#data">Data model</a>
+    <a href="#api">API</a>
+    <a href="#security">Security &amp; privacy</a>
+    <a href="#phases">Build phases</a>
+    <a href="#kickoff">Kickoff tasks</a>
+    <a href="#ownership">Ownership</a>
+    <a href="#cost">Cost</a>
+    <a href="#decisions">Decisions needed</a>
+  </nav>
+
+  <main>
+    <header class="doc">
+      <span class="eyebrow">AWS User Group Mississauga · Website</span>
+      <h1>Secure backend for forms and portals</h1>
+      <p class="muted">A plan for connecting the website's forms and building the Volunteer and Member portals from wireframe pages 6 to 9, built entirely on AWS.</p>
+      <div class="meta"><span>Draft for Warisha &amp; Sanyam</span><span>28 Oct 2026</span><span>Status: for review</span></div>
+    </header>
+
+    <section id="summary">
+      <span class="eyebrow">Summary</span>
+      <h2>What we're building</h2>
+      <p>The public website stays a fast static site. Behind it, a small serverless backend receives form submissions, stores them encrypted in Canada, and only shows them to signed-in organizers with the right role. Members get their own sign-in for the resource library.</p>
+      <div class="grid3">
+        <div class="box"><h3>Public forms</h3><p>Volunteer, speaker, sponsor and newsletter forms post to an API that can only write. No one can read submissions without signing in.</p></div>
+        <div class="box"><h3>Volunteer portal</h3><p>Organizers and reviewers sign in with multi-factor authentication and see only the submission types they're assigned.</p></div>
+        <div class="box"><h3>Member portal</h3><p>Members sign in to see their events and browse slides, recordings and handouts that speakers have approved for sharing.</p></div>
+      </div>
+      <div class="callout">
+        <b class="k">Why this approach</b>
+        <p>Everything is serverless, so there are no servers to patch and the cost stays near zero when nobody's using it. All data stays in <code>ca-central-1</code> (Montréal). The infrastructure is written as code with the AWS CDK, which gives volunteers real AWS projects to learn from.</p>
+      </div>
+    </section>
+
+    <section id="architecture">
+      <span class="eyebrow">Architecture</span>
+      <h2>How the pieces connect</h2>
+      <div class="diagram">
+<pre class="mermaid">
+flowchart LR
+  V([Visitor]) --> CF[CloudFront + WAF]
+  CF --> S3[(S3: static website)]
+  V -- form submit --> API[API Gateway]
+  API --> LF[Lambda: validate and store]
+  LF --> DB[(DynamoDB, encrypted)]
+  LF --> SES[SES: notify organizers]
+  O([Organizer]) -- sign in + MFA --> CS[Cognito: staff pool]
+  M([Member]) -- sign in --> CM[Cognito: member pool]
+  CS -- token --> API
+  CM -- token --> API
+  API --> LS[Lambda: role checks]
+  LS --> DB
+  LS --> R[(S3: private resources)]
+  LS --> AUD[(Audit log)]
+</pre>
+      </div>
+      <p class="muted">Organizer emails from SES only say "a new volunteer form arrived, sign in to view". They never include the applicant's details, as the wireframe requires.</p>
+    </section>
+
+    <section id="services">
+      <span class="eyebrow">Services</span>
+      <h2>What each AWS service does</h2>
+      <div class="grid2">
+        <div class="box"><span class="svc">Amazon S3 + CloudFront</span><h3>Hosting</h3><p>Serves the static website over HTTPS on your own domain. A second, private bucket holds slides, recordings and handouts.</p></div>
+        <div class="box"><span class="svc">Amazon API Gateway (HTTP API)</span><h3>Front door for data</h3><p>Public routes accept form posts. Portal routes require a valid sign-in token. CORS allows only the website's domain.</p></div>
+        <div class="box"><span class="svc">AWS Lambda</span><h3>Business rules</h3><p>Validates every field on the server, checks roles on every request, and writes audit entries. Never trusts the browser.</p></div>
+        <div class="box"><span class="svc">Amazon DynamoDB</span><h3>Storage</h3><p>Submissions, members, events, resources and the audit log. Encrypted at rest with point-in-time recovery for backups.</p></div>
+        <div class="box"><span class="svc">Amazon Cognito</span><h3>Sign-in</h3><p>Two user pools: staff (MFA required, groups for Admin and Reviewer) and members (optional MFA). Separate pools keep members away from staff data entirely.</p></div>
+        <div class="box"><span class="svc">Amazon SES</span><h3>Email</h3><p>New-submission alerts to organizers, confirmation emails to applicants, and double opt-in for the newsletter.</p></div>
+        <div class="box"><span class="svc">AWS WAF</span><h3>Abuse protection</h3><p>Rate limits on form routes to stop spam floods, plus a hidden honeypot field on every form.</p></div>
+        <div class="box"><span class="svc">AWS CDK + GitHub Actions</span><h3>Deployment</h3><p>All infrastructure in code, reviewed in pull requests, deployed with short-lived OIDC credentials. No AWS keys stored anywhere.</p></div>
+      </div>
+    </section>
+
+    <section id="requirements">
+      <span class="eyebrow">Requirements map</span>
+      <h2>How each wireframe requirement is met</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Wireframe requirement</th><th>Page</th><th>How we meet it</th></tr></thead>
+          <tbody>
+            <tr><td>Required fields and consent</td><td>6</td><td>Checked in the browser for speed, then again in Lambda. The server rejects anything missing.</td></tr>
+            <tr><td>Show confirmation after submission</td><td>6</td><td>The API returns success and the page shows the thank-you message the site already has.</td></tr>
+            <tr><td>Route responses to organizers securely</td><td>6</td><td>Stored encrypted in DynamoDB. Organizers are alerted by email with no personal details and read the submission in the portal.</td></tr>
+            <tr><td>Don't publish applicants' contact details</td><td>6</td><td>Public routes are write-only. Submissions are only ever shown to signed-in organizers.</td></tr>
+            <tr><td>Roles: Admin, Volunteer Reviewer, Member</td><td>7</td><td>Cognito groups, checked in Lambda on every request. Members live in a separate pool with no staff routes.</td></tr>
+            <tr><td>Reviewers see assigned categories only</td><td>7</td><td>Each reviewer's allowed types are stored on their staff profile and applied to every query on the server.</td></tr>
+            <tr><td>Individual accounts and MFA</td><td>7</td><td>One Cognito account per person. MFA required in the staff pool. No shared logins.</td></tr>
+            <tr><td>Record access and changes</td><td>7</td><td>Every view, status change, assignment and export writes an audit entry. CloudTrail records AWS-level changes.</td></tr>
+            <tr><td>Revoke access on exit</td><td>7</td><td>Disabling a Cognito user and signing them out everywhere ends access immediately.</td></tr>
+            <tr><td>Export only if authorized</td><td>7</td><td>Export route limited to Admins, and every export is logged.</td></tr>
+            <tr><td>Acknowledgement before first access</td><td>7</td><td>The portal shows both checkboxes on first sign-in. The API refuses staff requests until the acknowledgement is recorded.</td></tr>
+            <tr><td>Member profile, events, resource library</td><td>8</td><td>Member routes return only the signed-in member's own data and published resources.</td></tr>
+            <tr><td>Search by event, service, level, speaker, type</td><td>8</td><td>Resources tagged with those fields and filtered in the portal. Easily fast enough at our size.</td></tr>
+            <tr><td>Materials hidden until permission is given</td><td>8</td><td>Each resource has a status. Only "permitted" items are listed, and files are served through short-lived signed links.</td></tr>
+            <tr><td>Member ID, opt-in, attendance, no duplicates</td><td>8</td><td>Unique email per member in Cognito. Registration and attendance stored per event.</td></tr>
+            <tr><td>QR or organizer check-in</td><td>8</td><td>Each member gets a QR code with a signed token. Organizers scan it from a staff-only check-in page.</td></tr>
+            <tr><td>Retention and deletion rules</td><td>9</td><td>DynamoDB time-to-live deletes closed submissions automatically after the agreed period, plus a "delete my data" request route.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="data">
+      <span class="eyebrow">Data model</span>
+      <h2>What we store</h2>
+      <p>We collect only what the forms ask for. Personal fields are never written to logs.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Record</th><th>Key fields</th><th>Who can read it</th></tr></thead>
+          <tbody>
+            <tr><td>Submission</td><td><code>type</code> (volunteer, speaker, sponsor), form fields, <code>status</code> (new, in review, accepted, declined, closed), <code>owner</code>, <code>receivedAt</code>, <code>consentAt</code>, <code>expiresAt</code></td><td><span class="pill staff">Admin</span> <span class="pill staff">Assigned reviewer</span></td></tr>
+            <tr><td>Staff profile</td><td>role, allowed types, <code>acknowledgedAt</code>, active</td><td><span class="pill staff">Admin</span></td></tr>
+            <tr><td>Member</td><td>member ID, name, email, opt-in, created date</td><td><span class="pill mem">That member</span> <span class="pill staff">Admin</span></td></tr>
+            <tr><td>Registration</td><td>member ID, event ID, registered, checked in</td><td><span class="pill mem">That member</span> <span class="pill staff">Admin</span></td></tr>
+            <tr><td>Event</td><td>title, date, level, speaker, venue, Meetup link</td><td><span class="pill pub">Public</span></td></tr>
+            <tr><td>Resource</td><td>event, AWS service, level, speaker, type, <code>permission</code>, file location</td><td><span class="pill mem">Members</span> (permitted only)</td></tr>
+            <tr><td>Newsletter subscriber</td><td>name, email, confirmed date, unsubscribed</td><td><span class="pill staff">Admin</span></td></tr>
+            <tr><td>Audit entry</td><td>who, action, record, time</td><td><span class="pill staff">Admin</span> (read-only)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="api">
+      <span class="eyebrow">API</span>
+      <h2>Routes</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Route</th><th>Access</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>POST /forms/{type}</code></td><td><span class="pill pub">Public</span></td><td>Volunteer, speaker or sponsor submission. Write-only.</td></tr>
+            <tr><td><code>POST /newsletter</code></td><td><span class="pill pub">Public</span></td><td>Subscribe, then confirm by email.</td></tr>
+            <tr><td><code>GET /staff/submissions</code></td><td><span class="pill staff">Staff</span></td><td>List by type and status, limited to the reviewer's categories.</td></tr>
+            <tr><td><code>PATCH /staff/submissions/{id}</code></td><td><span class="pill staff">Staff</span></td><td>Assign, change status, add follow-up notes.</td></tr>
+            <tr><td><code>POST /staff/export</code></td><td><span class="pill staff">Admin</span></td><td>Authorized export, always logged.</td></tr>
+            <tr><td><code>POST /staff/checkin</code></td><td><span class="pill staff">Staff</span></td><td>Record attendance from a QR scan or by name.</td></tr>
+            <tr><td><code>GET /me</code>, <code>GET /me/events</code></td><td><span class="pill mem">Member</span></td><td>Own profile, registrations and attendance.</td></tr>
+            <tr><td><code>GET /resources</code></td><td><span class="pill mem">Member</span></td><td>Search permitted materials.</td></tr>
+            <tr><td><code>GET /resources/{id}/file</code></td><td><span class="pill mem">Member</span></td><td>Returns a signed link that expires in minutes.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="security">
+      <span class="eyebrow">Security &amp; privacy</span>
+      <h2>Built in from day one</h2>
+      <ul class="checklist">
+        <li>All data stored in Canada (ca-central-1)</li>
+        <li>Encryption at rest and HTTPS everywhere</li>
+        <li>MFA required for every organizer and reviewer</li>
+        <li>Role checks on the server, never only in the browser</li>
+        <li>Least-privilege IAM: each Lambda can touch only its own table</li>
+        <li>No personal data in logs or notification emails</li>
+        <li>Audit entry for every view, change and export</li>
+        <li>Point-in-time recovery backups on every table</li>
+        <li>Automatic deletion after the agreed retention period</li>
+        <li>Rate limits and honeypot fields against spam</li>
+        <li>Privacy notice on every public form</li>
+        <li>Deploys via OIDC, no long-lived AWS keys</li>
+      </ul>
+      <div class="callout warn">
+        <b class="k">Before launch</b>
+        <p>As the wireframe checklist says, have Ontario or Canadian privacy counsel review the privacy notice, the volunteer confidentiality notice and any NDA. Get written permission before publishing recordings, slides or photos.</p>
+      </div>
+    </section>
+
+    <section id="phases">
+      <span class="eyebrow">Build phases</span>
+      <h2>Ship it in four steps</h2>
+      <p class="muted">This answers review question 1: what's essential for the first release. Phases 0 and 1 are the MVP.</p>
+      <div class="phases">
+        <div class="phase">
+          <div class="when"><b>Phase 0</b><span>Kickoff week<br>from Nov 5</span></div>
+          <div class="body">
+            <h3>Foundations</h3>
+            <ul><li>Create the group's AWS account with a billing alarm and IAM Identity Center logins for volunteers</li><li>Register the domain and set up the CDK project in GitHub</li><li>Deploy the current website to S3 and CloudFront</li></ul>
+            <p class="done"><b>Done when</b> the site is live on its own domain and deploys automatically from GitHub.</p>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="when"><b>Phase 1</b><span>MVP</span></div>
+          <div class="body">
+            <h3>Forms and volunteer portal</h3>
+            <ul><li>Form API, validation and storage for all four forms</li><li>Staff sign-in with MFA, roles and the first-access acknowledgement</li><li>Dashboard: view, assign, update status, follow up</li><li>Organizer email alerts, newsletter double opt-in, audit log</li></ul>
+            <p class="done"><b>Done when</b> a volunteer form submitted on the site appears only in an authorized reviewer's dashboard.</p>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="when"><b>Phase 2</b><span>After MVP</span></div>
+          <div class="body">
+            <h3>Member portal</h3>
+            <ul><li>Member sign-up with consent and preferences</li><li>Profile and "my events"</li><li>Resource library with search and signed file links</li></ul>
+            <p class="done"><b>Done when</b> a member can sign in and download the Oct 23 slides once the speaker has approved them.</p>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="when"><b>Phase 3</b><span>Operations</span></div>
+          <div class="body">
+            <h3>Check-in and reporting</h3>
+            <ul><li>QR check-in at events</li><li>Attendance and engagement tracking</li><li>Authorized exports for reporting</li></ul>
+            <p class="done"><b>Done when</b> organizers check in a full meetup from their phones.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="kickoff">
+      <span class="eyebrow">Kickoff tasks</span>
+      <h2>What volunteers can start on November 5</h2>
+      <p class="muted">This answers review question 4. Each task can be picked up independently.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Task</th><th>Good for</th><th>Level</th></tr></thead>
+          <tbody>
+            <tr><td>Static hosting with CDK (S3, CloudFront, domain, HTTPS)</td><td>First AWS project</td><td>100</td></tr>
+            <tr><td>GitHub Actions deploy with OIDC</td><td>DevOps learners</td><td>200</td></tr>
+            <tr><td>DynamoDB tables and the form-submit Lambda with validation</td><td>Backend developers</td><td>200</td></tr>
+            <tr><td>SES domain setup and notification templates</td><td>Anyone</td><td>100</td></tr>
+            <tr><td>Cognito staff pool, groups and MFA</td><td>Security-minded</td><td>300</td></tr>
+            <tr><td>Staff dashboard screens</td><td>Front-end developers</td><td>200</td></tr>
+            <tr><td>Privacy notice and form wording</td><td>Writers, non-technical volunteers</td><td>100</td></tr>
+            <tr><td>Replace placeholder content: events, organizers, sponsors</td><td>Non-technical volunteers</td><td>100</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="ownership">
+      <span class="eyebrow">Ownership</span>
+      <h2>Who looks after what</h2>
+      <p class="muted">This answers review question 3. Names to be agreed.</p>
+      <div class="grid2">
+        <div class="box"><h3>Platform owner</h3><p>Owns the AWS account, billing, admin access and approving new staff accounts.</p></div>
+        <div class="box"><h3>Tech lead</h3><p>Reviews pull requests, keeps dependencies updated, and watches alarms.</p></div>
+        <div class="box"><h3>Content owner</h3><p>Keeps events, speakers, sponsors and resources current, and checks accessibility.</p></div>
+        <div class="box"><h3>Privacy &amp; security owner</h3><p>Runs access reviews each quarter, handles deletion requests, and owns the privacy notice.</p></div>
+      </div>
+    </section>
+
+    <section id="cost">
+      <span class="eyebrow">Cost</span>
+      <h2>What it should cost</h2>
+      <p>At community scale (a few hundred members and dozens of submissions a month), Lambda, API Gateway, DynamoDB, Cognito and SES should mostly fall within AWS free tiers or cost cents. The steady costs are AWS WAF, which is a few dollars a month for a web ACL and its rules, and the domain name and Route 53 hosted zone. Expect roughly $10 to $15 a month in total. Confirm with the AWS Pricing Calculator before launch, and set a billing alarm in Phase 0.</p>
+    </section>
+
+    <section id="decisions">
+      <span class="eyebrow">Decisions needed</span>
+      <h2>Open questions for Warisha &amp; Sanyam</h2>
+      <ul class="decisions">
+        <li><span>How long do we keep submissions after they're closed? (Suggestion: 12 months)</span><em>Before Phase 1</em></li>
+        <li><span>Who are the first Admins and reviewers, and which form types does each reviewer see?</span><em>Before Phase 1</em></li>
+        <li><span>Which domain name do we register?</span><em>Phase 0</em></li>
+        <li><span>Who owns the AWS account and pays the bill?</span><em>Phase 0</em></li>
+        <li><span>Do we send the newsletter through SES or an existing mailing tool?</span><em>Phase 1</em></li>
+        <li><span>Does Meetup stay the source of truth for RSVPs, with the portal linking to it?</span><em>Phase 2</em></li>
+      </ul>
+    </section>
+  </main>
+</div>

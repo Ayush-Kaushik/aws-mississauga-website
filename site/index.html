@@ -1,0 +1,1480 @@
+<title>AWS User Group Mississauga</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: dark night-sky over the lakeshore. Purple from the logo, one warm amber for actions. Content in a 1160px column.
+   The hero carries a live 3D model of Mississauga's landmarks, wired together by AWS data links.
+   Level colours (100 / 200 / 300) are semantic and separate from the accent. */
+:root {
+  --bg: #0d0a1c;
+  --bg-2: #15102b;
+  --surface: #1b1536;
+  --line: #2e2652;
+  --fg: #f1eefb;
+  --muted: #a49cc4;
+  --purple: #8b5cf6;
+  --purple-soft: #c4b0ff;
+  --amber: #ffb547;
+  --amber-ink: #241500;
+  --glow: rgba(139, 92, 246, .28);
+  --field: #120e26;
+  --ok: #4ade80;
+  --l100: #5eead4;
+  --l200: #c4b0ff;
+  --l300: #ffb547;
+  /* the 3D window is a night scene in both themes */
+  --scene-bg: #0b0820;
+  --scene-fg: #f1eefb;
+  --scene-muted: #b3abd6;
+  --scene-line: rgba(139, 92, 246, .4);
+  --scene-glass: rgba(16, 11, 40, .78);
+  --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body: "Figtree", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #faf8ff; --bg-2: #f1ecff; --surface: #ffffff; --line: #e1d9f7;
+    --fg: #1a1233; --muted: #5d5480; --purple: #6d3fe0; --purple-soft: #6d3fe0;
+    --amber: #f59e0b; --amber-ink: #1f1300; --glow: rgba(109, 63, 224, .16);
+    --field: #ffffff; --ok: #15803d; --l100: #0f766e; --l200: #6d3fe0; --l300: #b45309;
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #faf8ff; --bg-2: #f1ecff; --surface: #ffffff; --line: #e1d9f7;
+  --fg: #1a1233; --muted: #5d5480; --purple: #6d3fe0; --purple-soft: #6d3fe0;
+  --amber: #f59e0b; --amber-ink: #1f1300; --glow: rgba(109, 63, 224, .16);
+  --field: #ffffff; --ok: #15803d; --l100: #0f766e; --l200: #6d3fe0; --l300: #b45309;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 400 1rem/1.6 var(--body); }
+img { max-width: 100%; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+a { color: inherit; }
+a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; border-radius: 6px; }
+.wrap { max-width: 1160px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--display); line-height: 1.08; margin: 0; text-wrap: balance; letter-spacing: -0.02em; }
+h2 { font-size: clamp(1.9rem, 4vw, 2.75rem); font-weight: 700; }
+p { margin: 0; }
+.eyebrow { font: 500 .75rem/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--purple-soft); }
+.lede { color: var(--muted); font-size: 1.075rem; max-width: 60ch; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; padding: .8rem 1.25rem; border-radius: 10px; font: 600 .95rem/1 var(--body); text-decoration: none; border: 1px solid transparent; cursor: pointer; transition: transform .15s ease, background .15s ease; }
+.btn:hover { transform: translateY(-1px); }
+.btn-primary { background: var(--amber); color: var(--amber-ink); }
+.btn-ghost { border-color: var(--line); color: var(--fg); background: transparent; }
+.btn-ghost:hover { background: var(--bg-2); }
+.btn-sm { padding: .55rem .85rem; font-size: .85rem; }
+
+/* Header */
+header.site { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--bg) 86%, transparent); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+.nav { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: .7rem; }
+.brand { display: flex; align-items: center; gap: .7rem; text-decoration: none; flex: none; }
+.brand img { width: 40px; height: auto; }
+.brand b { display: block; font: 700 1rem/1.1 var(--display); }
+.brand small { color: var(--muted); font-size: .78rem; }
+.links { display: flex; gap: 1.05rem; list-style: none; margin: 0; padding: 0; }
+.links a { text-decoration: none; color: var(--muted); font-weight: 500; font-size: .88rem; white-space: nowrap; }
+.links a:hover { color: var(--fg); }
+.menu-btn { display: none; background: none; border: 1px solid var(--line); color: var(--fg); border-radius: 8px; padding: .45rem .7rem; font: 600 .85rem var(--body); }
+@media (max-width: 1180px) {
+  .links { display: none; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; gap: 0; background: var(--bg); border-bottom: 1px solid var(--line); padding: .5rem max(16px, env(safe-area-inset-right, 0px)) 1rem max(16px, env(safe-area-inset-left, 0px)); max-height: 75vh; overflow-y: auto; }
+  .links.open { display: flex; }
+  .links a { display: block; padding: .65rem 0; font-size: .95rem; }
+  .menu-btn { display: inline-block; }
+}
+@media (max-width: 560px) { .nav .btn-primary { display: none; } }
+
+/* Hero */
+.hero { position: relative; overflow: hidden; padding-block: clamp(2.5rem, 6vw, 5rem) clamp(3rem, 6vw, 5rem); background: radial-gradient(60% 70% at 78% 40%, var(--glow), transparent 70%); }
+.hero-grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: 3rem; align-items: center; }
+.hero-copy { display: grid; gap: 1.4rem; min-width: 0; }
+.pin { display: inline-flex; align-items: center; gap: .5rem; padding: .45rem .8rem; border: 1px solid var(--line); border-radius: 999px; width: fit-content; background: var(--bg-2); }
+.pin::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--purple); box-shadow: 0 0 0 4px var(--glow); }
+.hero h1 { font-size: clamp(2.6rem, 6.2vw, 4.6rem); font-weight: 800; }
+.hero h1 em { font-style: normal; color: var(--purple-soft); }
+.hero h1 span { color: var(--amber); }
+.cta-row { display: flex; flex-wrap: wrap; gap: .75rem; }
+.next-up { display: grid; grid-template-columns: auto 1fr; gap: .2rem 1rem; align-items: center; padding: .9rem 1.1rem; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); text-decoration: none; max-width: 520px; transition: border-color .15s ease; }
+.next-up:hover { border-color: var(--purple); }
+.next-up .when { grid-row: span 2; display: grid; place-items: center; width: 58px; height: 58px; border-radius: 12px; background: var(--bg-2); border: 1px solid var(--line); font: 800 1.4rem/1 var(--display); }
+.next-up .when small { font: 500 .62rem/1 var(--mono); color: var(--purple-soft); letter-spacing: .1em; }
+.next-up .k { font: 500 .68rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--amber); display: flex; gap: .6rem; align-items: center; flex-wrap: wrap; }
+.next-up b { font: 700 1.02rem/1.25 var(--display); }
+@media (max-width: 880px) { .hero-grid { grid-template-columns: 1fr; } }
+
+/* 3D city window */
+.city { position: relative; min-width: 0; aspect-ratio: 1 / 1.02; max-width: 100%; border-radius: 22px; overflow: hidden; background: radial-gradient(80% 60% at 60% 25%, #2a1a5e, var(--scene-bg)); border: 1px solid var(--scene-line); box-shadow: 0 30px 80px rgba(20, 8, 60, .45), 0 0 0 6px var(--glow); color: var(--scene-fg); }
+.city canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; touch-action: pan-y; }
+.city canvas:active { cursor: grabbing; }
+.city-hud { position: absolute; top: 14px; left: 14px; right: 14px; display: flex; justify-content: space-between; gap: .5rem; flex-wrap: wrap; pointer-events: none; }
+.city-hud span { font: 500 .68rem/1 var(--mono); letter-spacing: .06em; padding: .45rem .6rem; border-radius: 6px; background: var(--scene-glass); border: 1px solid var(--scene-line); color: var(--scene-muted); }
+.city-hud b { color: var(--scene-fg); font-weight: 500; }
+.city-panel { position: absolute; left: 12px; right: 12px; bottom: 12px; display: grid; gap: .6rem; padding: .9rem; border-radius: 14px; background: var(--scene-glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--scene-line); }
+.city-caption { display: grid; gap: .2rem; min-height: 3.6em; }
+.city-caption b { font: 700 1.05rem/1.2 var(--display); }
+.city-caption b i { font-style: normal; font: 500 .7rem/1 var(--mono); color: #ffb547; letter-spacing: .08em; margin-left: .4rem; vertical-align: middle; }
+.city-caption span { color: var(--scene-muted); font-size: .85rem; line-height: 1.45; }
+.stops { display: flex; gap: .35rem; overflow-x: auto; scrollbar-width: none; }
+.stops::-webkit-scrollbar { display: none; }
+.stops button { flex: none; font: 500 .72rem/1 var(--mono); padding: .5rem .65rem; border-radius: 7px; border: 1px solid var(--scene-line); background: transparent; color: var(--scene-muted); cursor: pointer; transition: background .15s ease, color .15s ease; }
+.stops button:hover { color: var(--scene-fg); background: rgba(139, 92, 246, .2); }
+.stops button[aria-pressed="true"] { background: #ffb547; border-color: #ffb547; color: #241500; }
+.city-hint { position: absolute; top: 48px; left: 14px; font: 500 .66rem/1 var(--mono); color: var(--scene-muted); letter-spacing: .08em; pointer-events: none; opacity: .8; }
+.city.no-gl canvas, .city.no-gl .city-hint { display: none; }
+
+/* Strip */
+.strip { border-block: 1px solid var(--line); background: var(--bg-2); }
+.strip-grid { display: grid; grid-template-columns: repeat(4, 1fr); padding-block: 1.6rem; gap: 1rem; }
+.strip-grid div { display: grid; gap: .2rem; }
+.strip-grid b { font: 700 1.35rem/1.2 var(--display); }
+.strip-grid span { color: var(--muted); font-size: .88rem; }
+@media (max-width: 720px) { .strip-grid { grid-template-columns: repeat(2, 1fr); } }
+
+section.block { padding-block: clamp(3.5rem, 8vw, 6rem); }
+section.tint { background: var(--bg-2); border-block: 1px solid var(--line); }
+.head { display: grid; gap: .9rem; margin-bottom: 2.5rem; }
+.sub { font: 700 1.35rem/1.2 var(--display); margin: 3rem 0 1.25rem; }
+.note { margin-top: 1.25rem; color: var(--muted); font-size: .85rem; }
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+@media (max-width: 800px) { .split { grid-template-columns: 1fr; } }
+.card { padding: 1.5rem; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); display: grid; gap: .6rem; align-content: start; min-width: 0; }
+.card h3 { font-size: 1.2rem; }
+.card p { color: var(--muted); }
+.k-label { font: 500 .7rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--amber); }
+
+/* Levels */
+.lvl { display: inline-flex; align-items: center; gap: .35rem; font: 500 .68rem/1 var(--mono); letter-spacing: .06em; padding: .35rem .5rem; border-radius: 6px; border: 1px solid currentColor; white-space: nowrap; }
+.lvl::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.lvl-100 { color: var(--l100); }
+.lvl-200 { color: var(--l200); }
+.lvl-300 { color: var(--l300); }
+.legend { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; align-items: center; color: var(--muted); font-size: .9rem; margin-bottom: 1.5rem; }
+
+/* About */
+.pillars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+.pillar { background: var(--bg); padding: 1.75rem; display: grid; gap: .75rem; align-content: start; }
+.pillar .tag { font: 500 .72rem/1 var(--mono); color: var(--amber); letter-spacing: .1em; text-transform: uppercase; }
+.pillar h3 { font-size: 1.35rem; }
+.pillar p { color: var(--muted); font-size: .95rem; }
+@media (max-width: 900px) { .pillars { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px) { .pillars { grid-template-columns: 1fr; } }
+.mv { margin-bottom: 2rem; }
+.coc { display: grid; grid-template-columns: 1fr auto; gap: 1.5rem; align-items: center; margin-top: 1.5rem; padding: 1.4rem 1.6rem; border-radius: 14px; border: 1px solid var(--line); background: var(--bg-2); }
+.coc p { color: var(--muted); }
+@media (max-width: 640px) { .coc { grid-template-columns: 1fr; } }
+
+/* People */
+.people { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+.person { padding: 1.5rem; border: 1px solid var(--line); border-radius: 14px; display: grid; gap: .9rem; justify-items: start; align-content: start; background: var(--surface); }
+.avatar { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; font: 700 1.3rem var(--display); color: var(--purple-soft); background: var(--bg-2); border: 1px dashed var(--purple); }
+.avatar { overflow: hidden; }
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
+.person h3 { font-size: 1.1rem; }
+.person h3 a { color: inherit; text-decoration: none; }
+.person h3 a:hover { text-decoration: underline; }
+.person p { color: var(--muted); font-size: .9rem; }
+.person .talk { font-size: .85rem; color: var(--fg); }
+.person.open { border-style: dashed; background: var(--bg-2); }
+@media (max-width: 900px) { .people { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .people { grid-template-columns: 1fr; } }
+
+/* Events */
+.events { display: grid; gap: 1rem; }
+.event { display: grid; grid-template-columns: 88px 1fr auto; gap: .9rem 1.5rem; align-items: center; padding: 1.4rem; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+.date { display: grid; place-items: center; text-align: center; border-radius: 12px; padding: .7rem 0; background: var(--bg-2); border: 1px solid var(--line); }
+.date b { font: 800 2rem/1 var(--display); }
+.date span { font: 500 .72rem/1.4 var(--mono); color: var(--purple-soft); letter-spacing: .12em; }
+.event-body { display: grid; gap: .45rem; min-width: 0; }
+.event-body h3 { font-size: 1.25rem; }
+.event-body p { color: var(--muted); font-size: .95rem; }
+.meta { display: flex; flex-wrap: wrap; gap: .4rem 1.1rem; font: 500 .78rem/1.4 var(--mono); color: var(--muted); }
+.badges { display: flex; gap: .4rem; flex-wrap: wrap; align-items: center; }
+.badge { font: 500 .68rem/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; padding: .35rem .5rem; border-radius: 6px; border: 1px solid var(--line); color: var(--purple-soft); }
+.badge.past { color: var(--muted); }
+.event.is-past { background: transparent; }
+.event details { grid-column: 2 / -1; }
+.event summary { cursor: pointer; font: 600 .88rem/1.4 var(--body); color: var(--purple-soft); list-style: none; display: inline-flex; gap: .4rem; align-items: center; }
+.event summary::-webkit-details-marker { display: none; }
+.event summary::before { content: "+"; font-family: var(--mono); }
+.event details[open] summary::before { content: "−"; }
+.detail-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem 1.5rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--line); }
+.detail-grid h4 { margin: 0 0 .35rem; font: 500 .7rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--amber); }
+.detail-grid p, .detail-grid li { color: var(--muted); font-size: .92rem; }
+.detail-grid ul { margin: 0; padding-left: 1.1rem; }
+.materials { display: flex; flex-wrap: wrap; gap: .4rem; }
+.materials span { font: 500 .74rem/1 var(--mono); padding: .45rem .6rem; border-radius: 6px; border: 1px dashed var(--line); color: var(--muted); }
+.materials a { font: 500 .74rem/1 var(--mono); padding: .45rem .6rem; border-radius: 6px; border: 1px solid var(--purple); color: var(--purple-soft); text-decoration: none; }
+.materials a:hover { background: var(--bg-2); }
+@media (max-width: 720px) {
+  .event { grid-template-columns: 70px 1fr; }
+  .event > .btn { grid-column: 1 / -1; }
+  .event details { grid-column: 1 / -1; }
+  .detail-grid { grid-template-columns: 1fr; }
+  .date b { font-size: 1.6rem; }
+}
+
+/* Labs & Jams (inside Events) */
+.labs-intro { display: grid; gap: .6rem; margin: 3rem 0 1.5rem; }
+.labs-intro .sub { margin: 0; }
+.toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
+.seg { display: inline-flex; flex-wrap: wrap; gap: .3rem; padding: .3rem; border-radius: 12px; border: 1px solid var(--line); background: var(--bg-2); }
+.seg button { font: 600 .88rem/1 var(--body); padding: .6rem .9rem; border-radius: 9px; border: 0; background: transparent; color: var(--muted); cursor: pointer; }
+.seg button[aria-pressed="true"], .seg button[aria-selected="true"] { background: var(--surface); color: var(--fg); box-shadow: 0 0 0 1px var(--line); }
+.seg.small button { font: 500 .74rem/1 var(--mono); padding: .55rem .7rem; }
+.labs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+.lab dl { display: grid; grid-template-columns: auto 1fr; gap: .45rem 1rem; margin: .4rem 0 .6rem; font-size: .9rem; }
+.lab dt { font: 500 .7rem/1.6 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.lab dd { margin: 0; }
+.lab .top { display: flex; justify-content: space-between; gap: .5rem; flex-wrap: wrap; align-items: center; }
+.lab .btn { justify-self: start; }
+.empty { grid-column: 1 / -1; padding: 2rem; text-align: center; color: var(--muted); border: 1px dashed var(--line); border-radius: 14px; }
+@media (max-width: 760px) { .labs { grid-template-columns: 1fr; } }
+.builds { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+.build { padding: 1.5rem; border-radius: 14px; border: 1px solid var(--line); background: radial-gradient(90% 120% at 100% 0%, var(--glow), transparent 60%), var(--surface); display: grid; gap: .6rem; }
+.build p { color: var(--muted); }
+@media (max-width: 760px) { .builds { grid-template-columns: 1fr; } }
+
+/* Forms */
+.form-card { padding: clamp(1.25rem, 4vw, 2rem); border-radius: 18px; border: 1px solid var(--line); background: var(--surface); display: grid; gap: 1.1rem; min-width: 0; }
+.form-card h3 { font-size: 1.35rem; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-grid .full { grid-column: 1 / -1; }
+@media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+.field { display: grid; gap: .4rem; min-width: 0; }
+.field > label, fieldset legend { font: 600 .85rem/1.3 var(--body); }
+.req { color: var(--amber); }
+input[type="text"], input[type="email"], input[type="url"], select, textarea { width: 100%; font: 400 .95rem/1.4 var(--body); color: var(--fg); background: var(--field); border: 1px solid var(--line); border-radius: 9px; padding: .7rem .8rem; }
+textarea { min-height: 96px; resize: vertical; }
+input:focus, select:focus, textarea:focus { outline: 2px solid var(--purple); outline-offset: 1px; border-color: var(--purple); }
+fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: .5rem; min-width: 0; }
+.checks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .45rem 1rem; }
+.checks.row { display: flex; flex-wrap: wrap; gap: .45rem 1.25rem; }
+.checks label { display: flex; gap: .55rem; align-items: flex-start; font-size: .92rem; color: var(--fg); cursor: pointer; }
+.checks input { accent-color: var(--purple); margin-top: .2rem; width: 16px; height: 16px; flex: none; }
+.consent { display: flex; gap: .6rem; align-items: flex-start; font-size: .9rem; color: var(--muted); }
+.consent input { accent-color: var(--purple); margin-top: .2rem; width: 16px; height: 16px; flex: none; }
+@media (max-width: 480px) { .checks { grid-template-columns: 1fr; } }
+.form-foot { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between; }
+.preview-note { font: 500 .72rem/1.5 var(--mono); color: var(--muted); letter-spacing: .02em; }
+.preview-note::before { content: "● "; color: var(--amber); }
+.form-error { color: var(--amber); font-size: .88rem; }
+.hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.confirm { display: grid; gap: .5rem; padding: 1.25rem; border-radius: 12px; border: 1px solid var(--ok); background: color-mix(in srgb, var(--ok) 10%, transparent); }
+.confirm b { color: var(--ok); font-family: var(--display); font-size: 1.1rem; }
+.confirm p { color: var(--muted); font-size: .92rem; }
+.part { font: 500 .7rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--purple-soft); padding-top: .4rem; border-top: 1px dashed var(--line); }
+
+/* Speakers */
+.speak-cta { margin-top: 2.5rem; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1.5rem; align-items: end; padding: 1.5rem; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+.speak-cta .formats { grid-template-columns: repeat(4, 1fr); margin-top: .8rem; }
+@media (max-width: 900px) { .speak-cta { grid-template-columns: 1fr; } .speak-cta .formats { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .speak-cta .formats { grid-template-columns: 1fr; } }
+
+/* Pop-up forms */
+dialog.modal { width: min(680px, calc(100% - 32px)); max-height: calc(100% - 32px); padding: 0; border: 0; border-radius: 18px; background: transparent; color: var(--fg); overflow: visible; }
+dialog.modal:focus { outline: none; }
+dialog.modal::backdrop { background: rgba(5, 3, 16, .72); backdrop-filter: blur(4px); }
+.modal-card { max-height: calc(100vh - 32px); overflow-y: auto; box-shadow: 0 30px 80px rgba(0, 0, 0, .45); }
+.modal-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+.modal-head h3 { margin-top: .5rem; }
+.modal-close { flex: none; width: 38px; height: 38px; border-radius: 9px; border: 1px solid var(--line); background: transparent; color: var(--fg); font-size: 1.35rem; line-height: 1; cursor: pointer; }
+.modal-close:hover { background: var(--bg-2); }
+.modal-form { display: grid; gap: 1.1rem; }
+body:has(dialog.modal[open]) { overflow: hidden; }
+@media (prefers-reduced-motion: no-preference) {
+  dialog.modal[open] { animation: pop .18s ease-out; }
+  @keyframes pop { from { opacity: 0; transform: translateY(8px) scale(.98); } }
+}
+.formats { margin: 0; padding: 0; list-style: none; display: grid; gap: .6rem; }
+.formats li { padding: .8rem 1rem; border-radius: 10px; background: var(--bg); border: 1px solid var(--line); font-size: .95rem; }
+.formats li b { font-family: var(--mono); font-weight: 500; font-size: .75rem; color: var(--amber); margin-right: .6rem; }
+
+/* Sponsors */
+.why { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+@media (max-width: 800px) { .why { grid-template-columns: 1fr; } }
+.principle { margin-top: 1rem; padding: 1rem 1.25rem; border-radius: 12px; border: 1px solid var(--line); background: var(--bg-2); display: flex; gap: .8rem; align-items: center; flex-wrap: wrap; }
+.principle b { font-family: var(--display); }
+.principle span { color: var(--muted); font-size: .92rem; }
+.logos { display: grid; grid-template-columns: repeat(4, 1fr); gap: .75rem; }
+.logos img { max-width: 80%; max-height: 64%; object-fit: contain; }
+.logos > * { text-decoration: none; text-align: center; padding: .5rem; }
+.logos > * { aspect-ratio: 5 / 2; border-radius: 12px; border: 1px dashed var(--line); display: grid; place-items: center; font: 500 .72rem/1 var(--mono); color: var(--muted); letter-spacing: .08em; text-transform: uppercase; background: var(--surface); }
+@media (max-width: 640px) { .logos { grid-template-columns: repeat(2, 1fr); } }
+
+/* Resources */
+.guide { padding: clamp(1.5rem, 4vw, 2.25rem); border-radius: 18px; border: 1px solid var(--line); background: radial-gradient(80% 120% at 100% 0%, var(--glow), transparent 60%), var(--surface); display: grid; gap: 1.25rem; }
+.steps { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(5, 1fr); gap: .75rem; counter-reset: s; }
+.steps li { counter-increment: s; padding: 1rem; border-radius: 12px; background: var(--bg); border: 1px solid var(--line); display: grid; gap: .35rem; align-content: start; }
+.steps li::before { content: "Step " counter(s); font: 500 .68rem/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--amber); }
+.steps b { font-family: var(--display); }
+.steps span { color: var(--muted); font-size: .88rem; }
+@media (max-width: 900px) { .steps { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 520px) { .steps { grid-template-columns: 1fr; } }
+.lib-row { display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: center; }
+.res { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.res a { display: grid; gap: .5rem; padding: 1.4rem; border-radius: 14px; border: 1px solid var(--line); text-decoration: none; background: var(--surface); transition: border-color .15s ease, background .15s ease; }
+.res a:hover { border-color: var(--purple); background: var(--bg-2); }
+.res .kind { font: 500 .7rem/1 var(--mono); text-transform: uppercase; letter-spacing: .1em; color: var(--purple-soft); }
+.res h3 { font-size: 1.15rem; }
+.res p { color: var(--muted); font-size: .92rem; }
+@media (max-width: 900px) { .res { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .res { grid-template-columns: 1fr; } }
+
+/* Volunteers */
+.vol-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 1.5rem; align-items: start; }
+.vol-side { display: grid; gap: 1rem; }
+@media (max-width: 900px) { .vol-grid { grid-template-columns: 1fr; } }
+
+/* Join */
+.channels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+.channels a, .channels div { display: grid; gap: .4rem; padding: 1.4rem; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); text-decoration: none; align-content: start; }
+.channels a:hover { border-color: var(--purple); }
+.channels b { font: 700 1.15rem/1.2 var(--display); }
+.channels span { color: var(--muted); font-size: .9rem; }
+@media (max-width: 720px) { .channels { grid-template-columns: 1fr; } }
+
+/* Footer */
+footer { border-top: 1px solid var(--line); background: var(--bg-2); padding-block: 3rem 2rem; }
+.foot { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 2rem; }
+.foot h4 { margin: 0 0 .8rem; font: 500 .75rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.foot ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
+.foot a { text-decoration: none; color: var(--fg); font-size: .93rem; }
+.foot a:hover { color: var(--purple-soft); }
+.foot p { color: var(--muted); font-size: .9rem; max-width: 40ch; margin-top: .8rem; }
+.legal { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--line); color: var(--muted); font-size: .8rem; }
+@media (max-width: 820px) { .foot { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 480px) { .foot { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+
+<header class="site">
+  <nav class="wrap nav" aria-label="Main">
+    <a class="brand" href="#top">
+      <img src="assets/logo.png" alt="AWS User Group Mississauga logo">
+      <span><b>Mississauga</b><small>AWS User Group</small></span>
+    </a>
+    <ul class="links" id="links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#events">Events</a></li>
+      <li><a href="#speakers">Speakers</a></li>
+      <li><a href="#sponsors">Sponsors</a></li>
+      <li><a href="#volunteers">Volunteers</a></li>
+      <li><a href="#join">Join</a></li>
+    </ul>
+    <a class="btn btn-primary" href="https://www.meetup.com/find/?keywords=AWS%20User%20Group%20Mississauga" target="_blank" rel="noopener">Join on Meetup</a>
+    <button class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="links">Menu</button>
+  </nav>
+</header>
+
+<main id="top">
+  <!-- HOME -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <span class="pin eyebrow">Learn. Connect. Build. Grow.</span>
+        <h1>Cloud builders of <em>Mississauga</em>, <span>meet up.</span></h1>
+        <p class="lede">Community-led AWS learning across Mississauga and the Western GTA. Free talks, hands-on labs and AWS Jams for every level, from your first login to production.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#join">Join the community →</a>
+          <a class="btn btn-ghost" href="#events">See upcoming events</a>
+        </div>
+        <a class="next-up" id="next-up" href="#ev-bedrock">
+          <span class="when">18<small>NOV</small></span>
+          <span class="k">Next meetup <span class="lvl lvl-200">Level 200</span></span>
+          <b>Building agents with Amazon Bedrock</b>
+        </a>
+      </div>
+
+      <div class="city" id="city" aria-label="Interactive 3D model of Mississauga landmarks connected by AWS services">
+        <canvas id="scene"></canvas>
+        <div class="city-hud" aria-hidden="true">
+          <span>43.5890° N · 79.6441° W</span>
+          <span>Local time <b id="clock">--:--</b></span>
+        </div>
+        <p class="city-hint" aria-hidden="true">DRAG TO ROTATE</p>
+        <div class="city-panel">
+          <div class="city-caption" aria-live="polite">
+            <b id="cap-title">Mississauga, connected</b>
+            <span id="cap-text">Five landmarks, linked by the AWS services we talk about at our meetups. Pick one to fly there.</span>
+          </div>
+          <div class="stops" role="group" aria-label="Fly to a landmark">
+            <button type="button" data-stop="0" aria-pressed="true">Overview</button>
+            <button type="button" data-stop="1" aria-pressed="false">Absolute World</button>
+            <button type="button" data-stop="2" aria-pressed="false">City Hall</button>
+            <button type="button" data-stop="3" aria-pressed="false">Square One</button>
+            <button type="button" data-stop="4" aria-pressed="false">Pearson</button>
+            <button type="button" data-stop="5" aria-pressed="false">Port Credit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="strip">
+    <div class="wrap strip-grid">
+      <div><b>Monthly</b><span>In-person meetups</span></div>
+      <div><b>Hands-on</b><span>Labs, workshops &amp; AWS Jams</span></div>
+      <div><b>Free</b><span>Always, for everyone</span></div>
+      <div><b>Western GTA</b><span>Mississauga, Brampton, Oakville, Milton</span></div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section class="block" id="about">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">About the community</span>
+        <h2>A room full of people building on AWS</h2>
+        <p class="lede">From Square One to Port Credit, Mississauga is full of engineers working on cloud problems. We give them a place to compare notes.</p>
+      </div>
+      <div class="split mv">
+        <div class="card"><span class="k-label">Mission</span><h3>Make AWS skills accessible to everyone in the Western GTA</h3><p>Free, practical learning led by the community, at every level from Foundations to hands-on builds.</p></div>
+        <div class="card"><span class="k-label">Vision</span><h3>A connected local cloud community</h3><p>Where students, career changers and seasoned engineers learn from each other and grow their careers close to home.</p></div>
+      </div>
+      <div class="pillars">
+        <div class="pillar"><span class="tag">Learn</span><h3>Talks</h3><p>AWS fundamentals and practical talks from people who run these systems at work.</p></div>
+        <div class="pillar"><span class="tag">Connect</span><h3>People</h3><p>Meet builders, peers, startups and hiring teams from across Peel Region.</p></div>
+        <div class="pillar"><span class="tag">Build</span><h3>Labs</h3><p>Hands-on labs, instructor-led workshops and team-based AWS Jams.</p></div>
+        <div class="pillar"><span class="tag">Grow</span><h3>Careers</h3><p>Give your first talk, volunteer, and grow your network with local cloud builders.</p></div>
+      </div>
+
+      <h3 class="sub">Organizers &amp; volunteer team</h3>
+      <div class="people" id="organizers-list">
+        <div class="person"><div class="avatar">OL</div><div><h3>Organizer name</h3><p>Group lead</p></div></div>
+        <div class="person"><div class="avatar">CO</div><div><h3>Organizer name</h3><p>Co-organizer</p></div></div>
+        <div class="person"><div class="avatar">CO</div><div><h3>Organizer name</h3><p>Co-organizer · Events</p></div></div>
+        <div class="person open"><div class="avatar">+</div><div><h3>Volunteer with us</h3><p>Help with venues, tech, social media and more.</p></div><a class="btn btn-ghost btn-sm" href="#volunteers">Share your interest</a></div>
+      </div>
+
+      <div class="coc">
+        <div><span class="k-label">Code of Conduct</span><p style="margin-top:.5rem">We're a welcoming, harassment-free community. Be respectful, share knowledge rather than sales pitches, and help newcomers feel at home.</p></div>
+        <a class="btn btn-ghost" href="https://aws.amazon.com/codeofconduct/" target="_blank" rel="noopener">Read the guidelines</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- EVENTS -->
+  <section class="block tint" id="events">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">Events</span>
+        <h2>Upcoming meetups</h2>
+        <p class="lede">RSVP on Meetup so we can plan food and seating. Open any event for the agenda, prerequisites and travel details.</p>
+      </div>
+      <div class="legend"><span class="lvl lvl-100">100 Foundations</span><span class="lvl lvl-200">200 Deep Dive</span><span class="lvl lvl-300">300 Hands-on</span></div>
+      <div class="events" id="events-list">
+        <article class="event" id="ev-bedrock">
+          <div class="date"><b>18</b><span>NOV</span></div>
+          <div class="event-body">
+            <div class="badges"><span class="lvl lvl-200">Level 200</span><span class="badge">Gen AI</span></div>
+            <h3>Building agents with Amazon Bedrock</h3>
+            <p>A walkthrough of agent design on Bedrock, followed by a live demo and Q&amp;A.</p>
+            <div class="meta"><span>Wed, Nov 18, 2026</span><span>6:30 PM ET</span><span>Venue TBA · Mississauga</span><span>Speaker TBA</span></div>
+          </div>
+          <a class="btn btn-primary" href="https://www.meetup.com/find/?keywords=AWS%20User%20Group%20Mississauga" target="_blank" rel="noopener">RSVP on Meetup</a>
+          <details>
+            <summary>Event details</summary>
+            <div class="detail-grid">
+              <div><h4>What you will learn</h4><ul><li>How Bedrock agents plan and call tools</li><li>Connecting an agent to your own data</li><li>Guardrails and cost basics</li></ul></div>
+              <div><h4>Agenda</h4><ul><li>6:30 Doors, food and networking</li><li>7:00 Talk and live demo</li><li>8:00 Q&amp;A, then wrap up</li></ul></div>
+              <div><h4>Prerequisites</h4><p>Comfortable with basic AWS console use. No machine learning background needed.</p></div>
+              <div><h4>Accessibility &amp; transit</h4><p>Venue details, step-free access and the nearest MiWay and Hurontario LRT stops will be posted with the venue.</p></div>
+            </div>
+          </details>
+        </article>
+        <article class="event">
+          <div class="date"><b>09</b><span>DEC</span></div>
+          <div class="event-body">
+            <div class="badges"><span class="lvl lvl-100">Level 100</span><span class="badge">re:Invent</span></div>
+            <h3>re:Invent recap &amp; holiday social</h3>
+            <p>The biggest launches from re:Invent 2026, explained in ten-minute lightning talks. Snacks provided.</p>
+            <div class="meta"><span>Wed, Dec 9, 2026</span><span>6:30 PM ET</span><span>Venue TBA · Mississauga</span><span>Community speakers</span></div>
+          </div>
+          <a class="btn btn-primary" href="https://www.meetup.com/find/?keywords=AWS%20User%20Group%20Mississauga" target="_blank" rel="noopener">RSVP on Meetup</a>
+          <details>
+            <summary>Event details</summary>
+            <div class="detail-grid">
+              <div><h4>What you will learn</h4><ul><li>The launches that matter for everyday builders</li><li>What's worth trying first</li></ul></div>
+              <div><h4>Agenda</h4><ul><li>6:30 Doors and social</li><li>7:00 Lightning talks</li><li>8:00 Holiday social</li></ul></div>
+              <div><h4>Prerequisites</h4><p>None. Everyone welcome.</p></div>
+              <div><h4>Accessibility &amp; transit</h4><p>Posted with the venue announcement.</p></div>
+            </div>
+          </details>
+        </article>
+        <article class="event">
+          <div class="date"><b>20</b><span>JAN</span></div>
+          <div class="event-body">
+            <div class="badges"><span class="lvl lvl-300">Level 300</span><span class="badge">Workshop</span></div>
+            <h3>Serverless from zero: Lambda, API Gateway &amp; DynamoDB</h3>
+            <p>A hands-on lab. Leave with a working API deployed to your own AWS account.</p>
+            <div class="meta"><span>Wed, Jan 20, 2027</span><span>6:30 PM ET</span><span>Venue TBA · Mississauga</span><span>Speaker TBA</span></div>
+          </div>
+          <a class="btn btn-primary" href="https://www.meetup.com/find/?keywords=AWS%20User%20Group%20Mississauga" target="_blank" rel="noopener">RSVP on Meetup</a>
+          <details>
+            <summary>Event details</summary>
+            <div class="detail-grid">
+              <div><h4>What you will learn</h4><ul><li>Writing and deploying a Lambda function</li><li>Exposing it with API Gateway</li><li>Storing data in DynamoDB</li></ul></div>
+              <div><h4>Agenda</h4><ul><li>6:30 Setup help</li><li>7:00 Guided build</li><li>8:15 Show and tell</li></ul></div>
+              <div><h4>Prerequisites</h4><p>Bring a laptop. An AWS account on the Free Tier is recommended.</p></div>
+              <div><h4>Accessibility &amp; transit</h4><p>Posted with the venue announcement.</p></div>
+            </div>
+          </details>
+        </article>
+      </div>
+      <p class="note">Sample upcoming listings. Replace these with your group's real events and Meetup links.</p>
+
+      <h3 class="sub" id="past-heading">Latest meetup</h3>
+      <div class="events" id="past-list">
+        <article class="event is-past">
+          <div class="date"><b>23</b><span>OCT</span></div>
+          <div class="event-body">
+            <div class="badges"><span class="badge past">Past meetup</span></div>
+            <h3>Amazon Quick: building a productivity agent</h3>
+            <p>A session with Sangeeta on putting a productivity agent to work with Amazon Quick.</p>
+            <div class="meta"><span>Oct 23, 2026</span><span>Mississauga</span></div>
+          </div>
+          <a class="btn btn-ghost" href="#resources">Recap &amp; resources</a>
+          <details>
+            <summary>After-event materials</summary>
+            <div class="detail-grid">
+              <div><h4>Materials</h4><div class="materials"><span>Recording</span><span>Slides</span><span>Photos</span><span>Code</span><span>Feedback</span></div></div>
+              <div><h4>Status</h4><p>Shown as placeholders until the speaker shares them and permission is given to publish.</p></div>
+            </div>
+          </details>
+        </article>
+      </div>
+
+      <div class="labs-intro" id="labs">
+        <h3 class="sub">Labs &amp; Jams</h3>
+        <p class="lede">Hands-on learning. Labs are guided practice. Workshops are instructor-led builds. Game Days and AWS Jams are team-based technical challenges.</p>
+      </div>
+      <div class="toolbar">
+        <div class="seg" role="tablist" aria-label="Format">
+          <button type="button" role="tab" data-format="lab" aria-selected="true">Labs</button>
+          <button type="button" role="tab" data-format="workshop" aria-selected="false">Workshops</button>
+          <button type="button" role="tab" data-format="jam" aria-selected="false">Game Days &amp; AWS Jams</button>
+        </div>
+        <div class="seg small" role="group" aria-label="Filter by level">
+          <button type="button" data-level="all" aria-pressed="true">All levels</button>
+          <button type="button" data-level="100" aria-pressed="false">100</button>
+          <button type="button" data-level="200" aria-pressed="false">200</button>
+          <button type="button" data-level="300" aria-pressed="false">300</button>
+        </div>
+      </div>
+      <div class="labs" id="labs-list">
+        <article class="card lab" data-format="lab" data-level="100">
+          <div class="top"><span class="k-label">Lab · Amazon S3, CloudFront</span><span class="lvl lvl-100">Level 100</span></div>
+          <h3>Host a website on S3 and CloudFront</h3>
+          <dl><dt>Prerequisites</dt><dd>None</dd><dt>Bring</dt><dd>A laptop</dd><dt>AWS access</dt><dd>Temporary lab accounts provided</dd></dl>
+          <a class="btn btn-ghost btn-sm" href="https://www.meetup.com/find/?keywords=AWS%20User%20Group%20Mississauga" target="_blank" rel="noopener">Sign up</a>
+        </article>
+        <article class="card lab" data-format="lab" data-level="200">
+          <div class="top"><span class="k-label">Lab · Amazon Bedrock</span><span class="lvl lvl-200">Level 200</span></div>
+          <h3>Build an introductory chatbot</h3>
+          <dl><dt>Prerequisites</dt><dd>Basic Python</dd><dt>Bring</dt><dd>A laptop with a browser</dd><dt>AWS access</dt><dd>Temporary lab accounts provided</dd></dl>
+          <a class="btn btn-ghost btn-sm" href="https://www.meetup.com/find/?keywords=AWS%20User%20Group%20Mississauga" target="_blank" rel="noopener">Sign up</a>
+        </article>
+        <article class="card lab" data-format="workshop" data-level="200" hidden>
+          <div class="top"><span class="k-label">Workshop · AWS CDK</span><span class="lvl lvl-200">Level 200</span></div>
+          <h3>Infrastructure as code with the AWS CDK</h3>
+          <dl><dt>Prerequisites</dt><dd>Some TypeScript or Python</dd><dt>Bring</dt><dd>A laptop with Node.js installed</dd><dt>AWS access</dt><dd>Your own account (Free Tier)</dd></dl>
+          <a class="btn btn-ghost btn-sm" href="https://www.meetup.com/find/?keywords=AWS%20User%20Group%20Mississauga" target="_blank" rel="noopener">Sign up</a>
+        </article>
+        <article class="card lab" data-format="workshop" data-level="300" hidden>
+          <div class="top"><span class="k-label">Workshop · Amazon EKS</span><span class="lvl lvl-300">Level 300</span></div>
+          <h3>Kubernetes + LLM exploration</h3>
+          <dl><dt>Prerequisites</dt><dd>Containers and kubectl basics</dd><dt>Bring</dt><dd>A laptop with Docker</dd><dt>AWS access</dt><dd>Temporary lab accounts provided</dd></dl>
+          <a class="btn btn-ghost btn-sm" href="https://www.meetup.com/find/?keywords=AWS%20User%20Group%20Mississauga" target="_blank" rel="noopener">Sign up</a>
+        </article>
+        <article class="card lab" data-format="jam" data-level="200" hidden>
+          <div class="top"><span class="k-label">Game Day · Teams of 4</span><span class="lvl lvl-200">Level 200</span></div>
+          <h3>Keep the app alive</h3>
+          <dl><dt>Prerequisites</dt><dd>Comfortable in the AWS console</dd><dt>Bring</dt><dd>A laptop and a team (or we'll match you)</dd><dt>AWS access</dt><dd>Event accounts provided</dd></dl>
+          <a class="btn btn-ghost btn-sm" href="https://www.meetup.com/find/?keywords=AWS%20User%20Group%20Mississauga" target="_blank" rel="noopener">Sign up</a>
+        </article>
+        <article class="card lab" data-format="jam" data-level="300" hidden>
+          <div class="top"><span class="k-label">AWS Jam · Security</span><span class="lvl lvl-300">Level 300</span></div>
+          <h3>Security Jam: find it, fix it</h3>
+          <dl><dt>Prerequisites</dt><dd>IAM and networking basics</dd><dt>Bring</dt><dd>A laptop</dd><dt>AWS access</dt><dd>Event accounts provided</dd></dl>
+          <a class="btn btn-ghost btn-sm" href="https://www.meetup.com/find/?keywords=AWS%20User%20Group%20Mississauga" target="_blank" rel="noopener">Sign up</a>
+        </article>
+        <p class="empty" id="labs-empty" hidden>Nothing at this level yet in this format. Try another level, or suggest one when you volunteer.</p>
+      </div>
+      <p class="note">Sample sessions. Replace with your planned labs, workshops and Jams.</p>
+
+      <h3 class="sub">Featured builds</h3>
+      <div class="builds">
+        <div class="build"><span class="lvl lvl-200" style="justify-self:start">Level 200</span><h3>Introductory chatbot</h3><p>Go from a blank account to a working chatbot on Amazon Bedrock, then add your own documents.</p></div>
+        <div class="build"><span class="lvl lvl-300" style="justify-self:start">Level 300</span><h3>Kubernetes + LLM exploration</h3><p>Run an open model on Amazon EKS and learn what it takes to serve, scale and observe it.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPEAKERS -->
+  <section class="block tint" id="speakers">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">Speakers</span>
+        <h2>Voices from the community</h2>
+        <p class="lede">First-time speakers are welcome. A 15-minute story about a real problem you solved is exactly what this room wants to hear.</p>
+      </div>
+      <div class="people" id="speakers-list">
+        <div class="person"><div class="avatar">S</div><div><h3>Sangeeta</h3><p>Past speaker · Oct 2026</p></div><p class="talk">Amazon Quick: building a productivity agent</p></div>
+        <div class="person"><div class="avatar">?</div><div><h3>Speaker name</h3><p>Featured speaker</p></div><p class="talk">Talk title</p></div>
+        <div class="person"><div class="avatar">?</div><div><h3>Speaker name</h3><p>Featured speaker</p></div><p class="talk">Talk title</p></div>
+        <div class="person open"><div class="avatar">+</div><div><h3>This could be you</h3><p>Share your talk idea. We'll help you prepare.</p></div><button type="button" class="btn btn-primary btn-sm" data-open="speak-dialog">Apply to speak</button></div>
+      </div>
+
+      <div class="speak-cta">
+        <div>
+          <span class="k-label">Talk formats</span>
+          <ul class="formats">
+            <li><b>05 MIN</b>Lightning talk</li>
+            <li><b>15 MIN</b>Project story or demo</li>
+            <li><b>30 MIN</b>Deep dive with Q&amp;A</li>
+            <li><b>60 MIN</b>Hands-on workshop</li>
+          </ul>
+        </div>
+        <button type="button" class="btn btn-primary" data-open="speak-dialog">Apply to speak</button>
+      </div>
+
+      <dialog class="modal" id="speak-dialog" aria-labelledby="speak-dialog-title">
+        <div class="form-card modal-card">
+          <div class="modal-head">
+            <div><span class="eyebrow">Call for speakers</span><h3 id="speak-dialog-title">Apply to speak</h3></div>
+            <button type="button" class="modal-close" data-close aria-label="Close">×</button>
+          </div>
+          <form class="modal-form" data-form="speaker" novalidate>
+          <div class="form-grid">
+            <div class="field"><label for="sp-name">Name <span class="req">*</span></label><input id="sp-name" name="name" type="text" autocomplete="name" required></div>
+            <div class="field"><label for="sp-email">Email <span class="req">*</span></label><input id="sp-email" name="email" type="email" autocomplete="email" required></div>
+            <div class="field"><label for="sp-prof">Profession</label><input id="sp-prof" name="profession" type="text" autocomplete="organization-title"></div>
+            <div class="field"><label for="sp-co">Company</label><input id="sp-co" name="company" type="text" autocomplete="organization"></div>
+            <div class="field full"><label for="sp-skills">Skill sets</label><input id="sp-skills" name="skills" type="text" placeholder="e.g. serverless, data engineering, security"></div>
+            <div class="field full"><label for="sp-topics">Proposed topics <span class="req">*</span></label><textarea id="sp-topics" name="topics" required placeholder="A title and two or three sentences on what people will learn"></textarea></div>
+            <div class="field full"><label for="sp-avail">Availability</label><input id="sp-avail" name="availability" type="text" placeholder="e.g. any Wednesday evening from January"></div>
+          </div>
+          <label class="consent"><input id="sp-consent" type="checkbox" required> I agree that organizers may contact me about speaking. My details won't be published.</label>
+          <div class="form-foot"><p class="preview-note">Form preview: not connected yet</p><button class="btn btn-primary" type="submit">Send application</button></div>
+          </form>
+        </div>
+      </dialog>
+    </div>
+  </section>
+
+  <!-- SPONSORS -->
+  <section class="block" id="sponsors">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">Sponsors</span>
+        <h2>Why sponsor our community?</h2>
+        <p class="lede">Sponsors keep meetups free. In return, you meet the people building the Western GTA's cloud future.</p>
+      </div>
+      <div class="why">
+        <div class="card"><span class="k-label">Venue</span><h3>Host a meetup</h3><p>Open your office for an evening and welcome 40 to 80 builders through the door.</p></div>
+        <div class="card"><span class="k-label">Food &amp; support</span><h3>Fuel the community</h3><p>Cover pizza for a night, fund a workshop, or support prizes for a Game Day.</p></div>
+        <div class="card"><span class="k-label">Visibility</span><h3>Meet local talent</h3><p>Thanked on this site and at every event, with time to network with attendees.</p></div>
+      </div>
+      <div class="principle"><b>Knowledge sharing, not sales pitches.</b><span>Sponsors are welcome to share what they've built and learned, but not to sell from the stage.</span></div>
+
+      <h3 class="sub">Our sponsors</h3>
+      <div class="logos" id="sponsor-logos" aria-label="Sponsor logos coming soon">
+        <div>Your logo</div><div>Your logo</div><div>Your logo</div><div>Your logo</div>
+      </div>
+
+      <form class="form-card" data-form="sponsor" novalidate style="margin-top:2rem">
+        <h3>Sponsor inquiry</h3>
+        <div class="form-grid">
+          <div class="field"><label for="so-co">Company <span class="req">*</span></label><input id="so-co" name="company" type="text" autocomplete="organization" required></div>
+          <div class="field"><label for="so-name">Contact name <span class="req">*</span></label><input id="so-name" name="name" type="text" autocomplete="name" required></div>
+          <div class="field full"><label for="so-email">Email <span class="req">*</span></label><input id="so-email" name="email" type="email" autocomplete="email" required></div>
+          <fieldset class="full" data-group-required>
+            <legend>How would you like to help? <span class="req">*</span></legend>
+            <div class="checks row">
+              <label><input id="so-venue" type="checkbox" name="support" value="venue"> Venue</label>
+              <label><input id="so-food" type="checkbox" name="support" value="food"> Food</label>
+              <label><input id="so-workshop" type="checkbox" name="support" value="workshop"> Workshop or Jam</label>
+              <label><input id="so-community" type="checkbox" name="support" value="community"> Community support</label>
+            </div>
+          </fieldset>
+          <div class="field full"><label for="so-msg">Message</label><textarea id="so-msg" name="message"></textarea></div>
+        </div>
+        <label class="consent"><input id="so-consent" type="checkbox" required> I agree that organizers may contact me about sponsorship.</label>
+        <div class="form-foot"><p class="preview-note">Form preview: not connected yet</p><button class="btn btn-primary" type="submit">Send inquiry</button></div>
+      </form>
+    </div>
+  </section>
+
+  <!-- RESOURCES -->
+  <section class="block" id="resources">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">Resources</span>
+        <h2>Keep learning between meetups</h2>
+        <p class="lede">Slides, code, recordings and photos from our meetups, grouped by event and topic, plus free AWS training. Open to everyone.</p>
+      </div>
+
+      <div class="guide">
+        <div><span class="k-label">Starter guide</span><h3 style="font-size:1.6rem;margin-top:.5rem">What is AWS?</h3><p class="lede" style="margin-top:.5rem">Amazon Web Services rents you computing power, storage, databases and AI over the internet, so you pay for what you use instead of buying servers. Here's how to start.</p></div>
+        <ol class="steps">
+          <li><b>Learn the basics</b><span>Take the free Cloud Practitioner Essentials course on Skill Builder.</span></li>
+          <li><b>Create an account</b><span>Sign up for the Free Tier and set a billing alarm on day one.</span></li>
+          <li><b>Build something small</b><span>Host a static website on S3, the classic first project.</span></li>
+          <li><b>Come to a lab</b><span>Join a Level 100 session and build with others.</span></li>
+          <li><b>Share it</b><span>Give a lightning talk on what you learned.</span></li>
+        </ol>
+      </div>
+
+      <h3 class="sub">By meetup</h3>
+      <div class="card lib-row">
+        <div><span class="k-label">Oct 23, 2026 · Amazon Quick</span><h3 style="margin-top:.4rem">Productivity agent session with Sangeeta</h3><div class="materials" style="margin-top:.75rem"><span>Recording</span><span>Slides</span><span>PDF handouts</span><span>One-pagers</span><span>Useful links</span></div></div>
+        <p class="preview-note">Available once the speaker shares them</p>
+      </div>
+
+      <h3 class="sub">Learning links &amp; videos</h3>
+      <div class="res">
+        <a href="https://skillbuilder.aws/" target="_blank" rel="noopener"><span class="kind">Training</span><h3>AWS Skill Builder</h3><p>Free courses, labs and certification prep from AWS.</p></a>
+        <a href="https://builder.aws.com/" target="_blank" rel="noopener"><span class="kind">Community</span><h3>AWS Builder Center</h3><p>Articles, projects and discussions from builders worldwide.</p></a>
+        <a href="https://aws.amazon.com/education/awseducate/" target="_blank" rel="noopener"><span class="kind">Beginners</span><h3>AWS Educate</h3><p>Self-paced cloud training for students. No credit card needed.</p></a>
+        <a href="https://www.youtube.com/@amazonwebservices" target="_blank" rel="noopener"><span class="kind">Video</span><h3>AWS on YouTube</h3><p>Talks, re:Invent sessions and service walkthroughs.</p></a>
+        <a href="https://aws.amazon.com/free/" target="_blank" rel="noopener"><span class="kind">Hands-on</span><h3>AWS Free Tier</h3><p>Try services at no cost while you follow along with our labs.</p></a>
+        <a href="https://aws.amazon.com/blogs/aws/" target="_blank" rel="noopener"><span class="kind">News</span><h3>AWS News Blog</h3><p>Weekly roundups and launch announcements.</p></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- VOLUNTEERS -->
+  <section class="block tint" id="volunteers">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">Volunteers</span>
+        <h2>Become a volunteer</h2>
+        <p class="lede">Help grow AWS Mississauga through technical builds, events, outreach, partnerships or member support.</p>
+      </div>
+      <div class="vol-grid">
+        <div class="vol-side">
+          <div class="card"><span class="k-label">Why volunteer</span><h3>Build skills, build community</h3><p>Work on real AWS projects like this website, meet speakers and sponsors, and grow your network.</p></div>
+          <div class="card"><span class="k-label">Recognition</span><h3>Your work gets seen</h3><p>Volunteer contributions are highlighted on the site and thanked at our meetups.</p></div>
+        </div>
+        <form class="form-card" data-form="volunteer" novalidate>
+          <h3>Share your interest</h3>
+          <p class="part">Part A · About you</p>
+          <div class="form-grid">
+            <div class="field"><label for="vo-name">Full name <span class="req">*</span></label><input id="vo-name" name="name" type="text" autocomplete="name" required></div>
+            <div class="field"><label for="vo-email">Email <span class="req">*</span></label><input id="vo-email" name="email" type="email" autocomplete="email" required></div>
+            <fieldset class="full">
+              <legend>Availability</legend>
+              <div class="checks row">
+                <label><input id="vo-av-day" type="checkbox" name="availability" value="weekday-day"> Weekday daytime</label>
+                <label><input id="vo-av-eve" type="checkbox" name="availability" value="evenings"> Evenings</label>
+                <label><input id="vo-av-wkd" type="checkbox" name="availability" value="weekends"> Weekends</label>
+                <label><input id="vo-av-flex" type="checkbox" name="availability" value="flexible"> Flexible</label>
+              </div>
+            </fieldset>
+            <div class="field full"><label for="vo-slots">Preferred days or time slots</label><input id="vo-slots" name="slots" type="text"></div>
+          </div>
+          <p class="part">Part B · Interests</p>
+          <fieldset data-group-required data-label="Interests">
+            <legend>Select all that interest you <span class="req">*</span></legend>
+            <div class="checks">
+              <label><input id="vo-i-tech" type="checkbox" name="interests" value="technical"> Website / AWS / technical projects</label>
+              <label><input id="vo-i-log" type="checkbox" name="interests" value="logistics"> Logistics</label>
+              <label><input id="vo-i-greet" type="checkbox" name="interests" value="greeting"> Greeting / registration</label>
+              <label><input id="vo-i-venue" type="checkbox" name="interests" value="venue"> Venue sourcing</label>
+              <label><input id="vo-i-spons" type="checkbox" name="interests" value="sponsorships"> Sponsorships</label>
+              <label><input id="vo-i-social" type="checkbox" name="interests" value="social"> Social media / outreach</label>
+              <label><input id="vo-i-photo" type="checkbox" name="interests" value="photo"> Photos / video</label>
+              <label><input id="vo-i-content" type="checkbox" name="interests" value="content"> Speakers / content</label>
+            </div>
+          </fieldset>
+          <p class="part">Commitment &amp; consent</p>
+          <div class="form-grid">
+            <div class="field full"><label for="vo-skills">Skill sets</label><input id="vo-skills" name="skills" type="text"></div>
+            <fieldset>
+              <legend>Experience</legend>
+              <div class="checks row">
+                <label><input id="vo-x-beg" type="radio" name="experience" value="beginner"> Beginner</label>
+                <label><input id="vo-x-int" type="radio" name="experience" value="intermediate"> Intermediate</label>
+                <label><input id="vo-x-adv" type="radio" name="experience" value="advanced"> Advanced</label>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend>Commitment</legend>
+              <div class="checks row">
+                <label><input id="vo-c-one" type="radio" name="commitment" value="one-time"> One-time</label>
+                <label><input id="vo-c-occ" type="radio" name="commitment" value="occasional"> Occasional</label>
+                <label><input id="vo-c-on" type="radio" name="commitment" value="ongoing"> Ongoing</label>
+              </div>
+            </fieldset>
+            <div class="field full"><label for="vo-notes">Notes</label><textarea id="vo-notes" name="notes"></textarea></div>
+          </div>
+          <label class="consent"><input id="vo-consent" type="checkbox" required> I agree that organizers may use these details to contact me about volunteering. They won't be published or shared.</label>
+          <div class="form-foot"><p class="preview-note">Form preview: not connected yet</p><button class="btn btn-primary" type="submit">Share your interest</button></div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- JOIN -->
+  <section class="block" id="join">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">Join</span>
+        <h2>Join the community</h2>
+        <p class="lede">Pick the channels that suit you. Everything is free.</p>
+      </div>
+      <div class="channels">
+        <a href="https://www.meetup.com/find/?keywords=AWS%20User%20Group%20Mississauga" target="_blank" rel="noopener"><b>Meetup</b><span>Events and RSVPs</span></a>
+        <a href="https://www.linkedin.com/" target="_blank" rel="noopener"><b>LinkedIn</b><span>Updates and networking</span></a>
+        <a href="#volunteers"><b>Volunteer</b><span>Help run the community</span></a>
+      </div>
+      <form class="form-card" data-form="newsletter" novalidate>
+        <h3>Get the newsletter</h3>
+        <div class="form-grid">
+          <div class="field"><label for="nl-name">Name <span class="req">*</span></label><input id="nl-name" name="name" type="text" autocomplete="name" required></div>
+          <div class="field"><label for="nl-email">Email <span class="req">*</span></label><input id="nl-email" name="email" type="email" autocomplete="email" required></div>
+        </div>
+        <label class="consent"><input id="nl-consent" type="checkbox" required> Send me monthly updates about AWS Mississauga events. I can unsubscribe anytime.</label>
+        <div class="form-foot"><p class="preview-note">Form preview: not connected yet</p><button class="btn btn-primary" type="submit">Subscribe</button></div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a class="brand" href="#top"><img src="assets/logo.png" alt=""><span><b>Mississauga</b><small>AWS User Group</small></span></a>
+        <p>A community-run AWS User Group serving Mississauga and the Western GTA. Not affiliated with or endorsed by Amazon Web Services.</p>
+      </div>
+      <div>
+        <h4>Community</h4>
+        <ul><li><a href="#about">About</a></li><li><a href="#events">Events</a></li><li><a href="#speakers">Speakers</a></li></ul>
+      </div>
+      <div>
+        <h4>Get involved</h4>
+        <ul><li><a href="#sponsors">Sponsors</a></li><li><a href="#volunteers">Volunteers</a></li></ul>
+      </div>
+      <div>
+        <h4>Connect</h4>
+        <ul>
+          <li><a href="https://www.meetup.com/find/?keywords=AWS%20User%20Group%20Mississauga" target="_blank" rel="noopener">Meetup</a></li>
+          <li><a href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a></li>
+          <li><a href="#join">Contact</a></li>
+          <li><a href="https://aws.amazon.com/codeofconduct/" target="_blank" rel="noopener">Code of Conduct</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="legal">© 2026 AWS User Group Mississauga · Built by the community, for the community.</p>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// Menu
+(() => {
+  const btn = document.getElementById('menu-btn');
+  const links = document.getElementById('links');
+  btn.addEventListener('click', () => btn.setAttribute('aria-expanded', links.classList.toggle('open')));
+  links.addEventListener('click', e => { if (e.target.tagName === 'A') { links.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); } });
+})();
+
+// Local clock
+(() => {
+  const el = document.getElementById('clock');
+  const fmt = new Intl.DateTimeFormat('en-CA', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'America/Toronto', timeZoneName: 'short' });
+  const tick = () => { el.textContent = fmt.format(new Date()); };
+  tick(); setInterval(tick, 15000);
+})();
+
+// Pop-up forms: a button with data-open="<dialog id>" opens that dialog; ×, Esc or a click outside closes it
+(() => {
+  // delegated, so buttons drawn later from content.json work too
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('[data-open]');
+    if (!btn) return;
+    const dialog = document.getElementById(btn.dataset.open);
+    if (dialog && !dialog.open) dialog.showModal();
+  });
+  document.querySelectorAll('dialog.modal').forEach(dialog => {
+    dialog.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => dialog.close()));
+    dialog.addEventListener('click', e => { if (e.target === dialog) dialog.close(); });
+  });
+})();
+
+// Site content: organizers, speakers, events and sponsors come from content.json.
+// The HTML already on the page stays as a fallback if the file can't be loaded.
+(() => {
+  const MEETUP = 'https://www.meetup.com/find/?keywords=AWS%20User%20Group%20Mississauga';
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const link = u => /^(https?:\/\/|#)/i.test(u || '') ? u : '';
+  const src = u => /^(https:\/\/|assets\/)/i.test(u || '') ? u : '';
+  const ext = u => /^https?:/i.test(u) ? ' target="_blank" rel="noopener"' : '';
+  const parseDate = s => { const [y, m, d] = String(s).split('-').map(Number); return new Date(y, m - 1, d); };
+  const longDate = d => d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+  const mon = d => d.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
+  const day = d => String(d.getDate()).padStart(2, '0');
+  const initials = n => String(n || '?').split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('');
+  const level = l => l ? `<span class="lvl lvl-${esc(l)}">Level ${esc(l)}</span>` : '';
+
+  const avatar = p => `<div class="avatar">${src(p.photo) ? `<img src="${esc(p.photo)}" alt="">` : esc(initials(p.name))}</div>`;
+  const name = p => link(p.linkedin) ? `<a href="${esc(p.linkedin)}"${ext(p.linkedin)}>${esc(p.name)}</a>` : esc(p.name);
+  const person = (p, sub, talk) => `<div class="person">${avatar(p)}<div><h3>${name(p)}</h3><p>${esc(sub)}</p></div>${talk ? `<p class="talk">${esc(talk)}</p>` : ''}</div>`;
+  const items = (title, list) => list && list.length ? `<div><h4>${title}</h4><ul>${list.map(i => `<li>${esc(i)}</li>`).join('')}</ul></div>` : '';
+  const para = (title, text) => text ? `<div><h4>${title}</h4><p>${esc(text)}</p></div>` : '';
+
+  function eventCard(e, past) {
+    const tags = (e.tags || []).map(t => `<span class="badge">${esc(t)}</span>`).join('');
+    const meta = [longDate(e.d), !past && e.time, e.venue, !past && e.speaker].filter(Boolean).map(m => `<span>${esc(m)}</span>`).join('');
+    let action, details;
+    if (past) {
+      const m = e.materials || {};
+      const chips = [['recording', 'Recording'], ['slides', 'Slides'], ['photos', 'Photos'], ['code', 'Code'], ['feedback', 'Feedback']]
+        .map(([k, label]) => link(m[k]) ? `<a href="${esc(m[k])}"${ext(m[k])}>${label}</a>` : `<span>${label}</span>`).join('');
+      action = '<a class="btn btn-ghost" href="#resources">Recap &amp; resources</a>';
+      details = `<details><summary>After-event materials</summary><div class="detail-grid"><div><h4>Materials</h4><div class="materials">${chips}</div></div><div><h4>Status</h4><p>Materials without a link are shared once the speaker gives permission.</p></div></div></details>`;
+    } else {
+      const rsvp = link(e.rsvp) || MEETUP;
+      action = `<a class="btn btn-primary" href="${esc(rsvp)}"${ext(rsvp)}>RSVP on Meetup</a>`;
+      const inner = items('What you will learn', e.learn) + items('Agenda', e.agenda) + para('Prerequisites', e.prerequisites) + para('Accessibility &amp; transit', e.access);
+      details = inner ? `<details><summary>Event details</summary><div class="detail-grid">${inner}</div></details>` : '';
+    }
+    const badges = past ? '<span class="badge past">Past meetup</span>' : level(e.level);
+    return `<article class="event${past ? ' is-past' : ''}"${e.id ? ` id="ev-${esc(e.id)}"` : ''}>`
+      + `<div class="date"><b>${day(e.d)}</b><span>${mon(e.d)}</span></div>`
+      + `<div class="event-body"><div class="badges">${badges}${tags}</div><h3>${esc(e.title)}</h3>${e.summary ? `<p>${esc(e.summary)}</p>` : ''}<div class="meta">${meta}</div></div>`
+      + action + details + '</article>';
+  }
+
+  const sections = {
+    organizers(c) {
+      const el = document.getElementById('organizers-list');
+      const open = el.querySelector('.person.open')?.outerHTML || '';
+      el.innerHTML = (c.organizers || []).map(o => person(o, o.role)).join('') + open;
+    },
+    speakers(c) {
+      const el = document.getElementById('speakers-list');
+      const open = el.querySelector('.person.open')?.outerHTML || '';
+      el.innerHTML = (c.speakers || []).map(s => person(s, s.label, s.talk)).join('') + open;
+    },
+    events(c) {
+      const today = new Date(); today.setHours(0, 0, 0, 0);
+      const all = (c.events || []).map(e => ({ ...e, d: parseDate(e.date) })).filter(e => !isNaN(e.d));
+      const upcoming = all.filter(e => e.d >= today).sort((a, b) => a.d - b.d);
+      const past = all.filter(e => e.d < today).sort((a, b) => b.d - a.d).slice(0, 3);
+      document.getElementById('events-list').innerHTML = upcoming.length
+        ? upcoming.map(e => eventCard(e, false)).join('')
+        : '<p class="empty">No meetups scheduled right now. Join us on Meetup to hear about the next one first.</p>';
+      document.getElementById('past-list').innerHTML = past.map(e => eventCard(e, true)).join('');
+      document.getElementById('past-heading').hidden = !past.length;
+      document.getElementById('past-heading').textContent = past.length > 1 ? 'Recent meetups' : 'Latest meetup';
+      const next = document.getElementById('next-up');
+      const n = upcoming[0];
+      next.hidden = !n;
+      if (n) {
+        next.href = n.id ? `#ev-${n.id}` : '#events';
+        next.innerHTML = `<span class="when">${day(n.d)}<small>${mon(n.d)}</small></span><span class="k">Next meetup ${level(n.level)}</span><b>${esc(n.title)}</b>`;
+      }
+    },
+    sponsors(c) {
+      const list = c.sponsors || [];
+      if (!list.length) return;
+      const el = document.getElementById('sponsor-logos');
+      el.setAttribute('aria-label', 'Our sponsors');
+      el.innerHTML = list.map(s => {
+        const inner = src(s.logo) ? `<img src="${esc(s.logo)}" alt="${esc(s.name)}">` : esc(s.name);
+        return link(s.url) ? `<a href="${esc(s.url)}"${ext(s.url)}>${inner}</a>` : `<div>${inner}</div>`;
+      }).join('');
+    },
+  };
+
+  fetch('content.json', { cache: 'no-cache' })
+    .then(r => r.ok ? r.json() : Promise.reject(new Error(`content.json: HTTP ${r.status}`)))
+    .then(c => Object.entries(sections).forEach(([key, draw]) => {
+      try { draw(c); } catch (err) { console.error(`Could not show ${key} from content.json`, err); }
+    }))
+    .catch(err => console.warn('Showing built-in content.', err));
+})();
+
+// Labs & Jams: format tabs and level filter
+(() => {
+  const tabs = [...document.querySelectorAll('[data-format][role="tab"]')];
+  const levels = [...document.querySelectorAll('[data-level][aria-pressed]')];
+  const cards = [...document.querySelectorAll('#labs-list .lab')];
+  const empty = document.getElementById('labs-empty');
+  let format = 'lab', level = 'all';
+  function apply() {
+    let shown = 0;
+    cards.forEach(c => { const on = c.dataset.format === format && (level === 'all' || c.dataset.level === level); c.hidden = !on; if (on) shown++; });
+    empty.hidden = shown > 0;
+  }
+  tabs.forEach(t => t.addEventListener('click', () => { format = t.dataset.format; tabs.forEach(x => x.setAttribute('aria-selected', x === t)); apply(); }));
+  levels.forEach(b => b.addEventListener('click', () => { level = b.dataset.level; levels.forEach(x => x.setAttribute('aria-pressed', x === b)); apply(); }));
+})();
+
+// Forms: validate in the browser, then send. Two ways to send, first one set wins:
+// 1. Our AWS forms API: the deploy adds the forms-endpoint meta tag once it exists.
+// 2. Web3Forms: paste the user group's access key below and submissions are emailed to the
+//    address that key was created with. Web3Forms keys are meant to be public.
+// With neither, the forms only check the fields and say "Preview only".
+const WEB3FORMS_KEY = '';
+(() => {
+  const endpoint = document.querySelector('meta[name="forms-endpoint"]')?.content;
+  const web3forms = !endpoint && WEB3FORMS_KEY.trim();
+  const live = Boolean(endpoint || web3forms);
+  const subjects = { speaker: 'New speaker application', sponsor: 'New sponsor inquiry', volunteer: 'New volunteer', newsletter: 'New newsletter sign-up' };
+  const thanks = {
+    speaker: ['Application received', 'Thanks for offering to speak. An organizer will follow up about topics and dates.'],
+    sponsor: ['Inquiry received', 'Thank you for supporting the community. An organizer will be in touch.'],
+    volunteer: ['Thanks for volunteering', 'An organizer will reach out about next steps.'],
+    newsletter: ['Thanks for signing up', 'You\'ll get our next monthly update by email.'],
+  };
+  // Checkboxes become lists, radios their chosen value, everything else its text.
+  const collect = form => {
+    const data = { form: form.dataset.form, consent: true };
+    for (const el of form.elements) {
+      if (!el.name) continue;
+      if (el.type === 'checkbox') { if (el.checked) (data[el.name] ||= []).push(el.value); }
+      else if (el.type === 'radio') { if (el.checked) data[el.name] = el.value; }
+      else data[el.name] = el.value;
+    }
+    return data;
+  };
+  // The email lists each answer under its question as shown on the form, e.g. "Proposed topics".
+  const labelOf = el => {
+    const set = ['checkbox', 'radio'].includes(el.type) && el.closest('fieldset');
+    const text = set ? set.dataset.label || set.querySelector('legend')?.textContent : el.labels?.[0]?.textContent;
+    return (text || el.name).replace('*', '').trim();
+  };
+  const sendWeb3forms = async form => {
+    const data = collect(form);
+    if (data.website) return { ok: true }; // a bot filled in the hidden field
+    const kind = form.dataset.form;
+    const who = (kind === 'sponsor' ? data.company : data.name).replace(/\s+/g, ' ').trim();
+    const payload = { access_key: WEB3FORMS_KEY.trim(), subject: `${subjects[kind]}: ${who}`, from_name: 'AWS User Group Mississauga website', replyto: data.email, botcheck: '' };
+    for (const el of form.elements) {
+      if (!el.name || el.name === 'website' || payload[labelOf(el)] !== undefined) continue;
+      const v = data[el.name];
+      if (v === undefined || v === '' || (Array.isArray(v) && !v.length)) continue;
+      payload[labelOf(el)] = Array.isArray(v) ? v.join(', ') : v;
+    }
+    const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json' }, body: JSON.stringify(payload) });
+    const body = await res.json().catch(() => ({}));
+    return { ok: res.ok && body.success !== false, status: res.status };
+  };
+  const sendApi = async form => {
+    const res = await fetch(endpoint, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(collect(form)) });
+    const body = res.ok ? {} : await res.json().catch(() => ({}));
+    return { ok: res.ok, status: res.status, error: body.error };
+  };
+  document.querySelectorAll('form[data-form]').forEach(form => {
+    const err = document.createElement('p'); err.className = 'form-error'; err.setAttribute('role', 'alert'); err.hidden = true;
+    form.querySelector('.form-foot').before(err);
+    if (live) {
+      form.querySelector('.form-foot .preview-note')?.remove();
+      // Hidden from people; submissions with it filled in are bots and get ignored.
+      const hp = document.createElement('div'); hp.className = 'hp'; hp.setAttribute('aria-hidden', 'true');
+      hp.innerHTML = '<label>Website <input name="website" type="text" tabindex="-1" autocomplete="off"></label>';
+      form.prepend(hp);
+    }
+    const done = preview => {
+      const [t, d] = thanks[form.dataset.form];
+      const box = document.createElement('div'); box.className = 'confirm'; box.setAttribute('role', 'status'); box.tabIndex = -1;
+      box.innerHTML = '<b></b><p></p>' + (preview ? '<p class="preview-note">Preview only: this form isn\'t connected yet, so nothing was sent.</p>' : '');
+      box.querySelector('b').textContent = t; box.querySelector('p').textContent = d;
+      form.replaceChildren(box); box.focus();
+    };
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      // check in page order: text fields, then option groups, then consent
+      let msg = '', target = null;
+      const bad = [...form.querySelectorAll('[required]:not([type="checkbox"])')].find(f => !f.checkValidity());
+      const group = [...form.querySelectorAll('[data-group-required]')].find(g => !g.querySelector('input:checked'));
+      const consent = form.querySelector('input[type="checkbox"][required]:not(:checked)');
+      if (bad) { target = bad; msg = bad.type === 'email' && bad.value ? 'Please enter a valid email address.' : bad.type === 'url' && bad.value ? 'Please enter a full link starting with https://' : 'Please fill in the required fields marked *.'; }
+      else if (group) { target = group.querySelector('input'); msg = 'Please choose at least one option.'; }
+      else if (consent) { target = consent; msg = 'Please tick the consent box to continue.'; }
+      if (msg) { err.textContent = msg; err.hidden = false; target.focus(); return; }
+      if (!live) return done(true);
+      const btn = form.querySelector('[type="submit"]'), label = btn.textContent;
+      btn.disabled = true; btn.textContent = 'Sending…'; err.hidden = true;
+      try {
+        const res = await (endpoint ? sendApi(form) : sendWeb3forms(form));
+        if (res.ok) return done(false);
+        err.textContent = res.status === 429 ? 'Lots of people are sending forms right now. Please try again in a minute.' : res.error || 'We couldn\'t send that just now. Please try again in a few minutes.';
+      } catch {
+        err.textContent = 'We couldn\'t reach the server. Check your connection and try again.';
+      }
+      err.hidden = false; btn.disabled = false; btn.textContent = label;
+    });
+  });
+})();
+
+// 3D Mississauga
+(() => {
+  const box = document.getElementById('city');
+  const canvas = document.getElementById('scene');
+  let renderer;
+  try {
+    if (!window.THREE) throw 0;
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  } catch (e) { box.classList.add('no-gl'); return; }
+
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const small = innerWidth < 760;
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.75));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+
+  const NIGHT = 0x0b0820;
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(NIGHT);
+  scene.fog = new THREE.FogExp2(NIGHT, 0.012);
+  const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 400);
+
+  scene.add(new THREE.HemisphereLight(0x8b7bff, 0x0b0820, 0.75));
+  const sun = new THREE.DirectionalLight(0xffc89a, 0.55);
+  sun.position.set(-30, 40, 25);
+  scene.add(sun);
+  const towerGlow = new THREE.PointLight(0x8b5cf6, 1.4, 30);
+  towerGlow.position.set(-4, 8, 4);
+  scene.add(towerGlow);
+
+  // Lit-window texture shared by buildings
+  function windowTex(lit) {
+    const c = document.createElement('canvas'); c.width = 32; c.height = 64;
+    const g = c.getContext('2d');
+    g.fillStyle = '#000'; g.fillRect(0, 0, 32, 64);
+    for (let y = 2; y < 64; y += 4) for (let x = 2; x < 32; x += 4) {
+      if (Math.random() < lit) { g.fillStyle = Math.random() < .18 ? '#c4b0ff' : '#ffd59a'; g.fillRect(x, y, 2, 2); }
+    }
+    const t = new THREE.CanvasTexture(c);
+    t.wrapS = t.wrapT = THREE.RepeatWrapping; t.magFilter = THREE.NearestFilter;
+    return t;
+  }
+  const winTex = [windowTex(.35), windowTex(.55), windowTex(.2)];
+  const roofMat = new THREE.MeshStandardMaterial({ color: 0x17123a, roughness: .9 });
+  const wallMats = winTex.map(t => new THREE.MeshStandardMaterial({ color: 0x1b1540, roughness: .7, metalness: .25, emissive: 0xffffff, emissiveMap: t, emissiveIntensity: .9 }));
+
+  function block(w, h, d, x, z, mat) {
+    const geo = new THREE.BoxGeometry(w, h, d);
+    const uv = geo.attributes.uv;
+    for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * Math.max(w, d) * .6, uv.getY(i) * h * .35);
+    const m = new THREE.Mesh(geo, [mat, mat, roofMat, roofMat, mat, mat]);
+    m.position.set(x, h / 2, z);
+    scene.add(m);
+    return m;
+  }
+
+  // Ground, grid, lake, shoreline
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(220, 120), new THREE.MeshStandardMaterial({ color: 0x100c26, roughness: 1 }));
+  ground.rotation.x = -Math.PI / 2; ground.position.z = -44; scene.add(ground);
+  const grid = new THREE.GridHelper(220, 110, 0x4a35a0, 0x2a1f5c);
+  grid.material.transparent = true; grid.material.opacity = .35; grid.position.y = .01; scene.add(grid);
+  const lake = new THREE.Mesh(new THREE.PlaneGeometry(220, 90), new THREE.MeshStandardMaterial({ color: 0x0a0e2e, roughness: .25, metalness: .8 }));
+  lake.rotation.x = -Math.PI / 2; lake.position.set(0, .02, 61); scene.add(lake);
+  const shore = new THREE.Mesh(new THREE.PlaneGeometry(220, .12), new THREE.MeshBasicMaterial({ color: 0x8b5cf6 }));
+  shore.rotation.x = -Math.PI / 2; shore.position.set(0, .04, 16); scene.add(shore);
+
+  // Roads: Hurontario (north-south) and Burnhamthorpe (east-west)
+  const roadMat = new THREE.MeshBasicMaterial({ color: 0x2c2266 });
+  const huron = new THREE.Mesh(new THREE.PlaneGeometry(.9, 56), roadMat);
+  huron.rotation.x = -Math.PI / 2; huron.position.set(1, .03, -12); scene.add(huron);
+  const burn = new THREE.Mesh(new THREE.PlaneGeometry(64, .9), roadMat);
+  burn.rotation.x = -Math.PI / 2; burn.position.set(0, .03, -8); scene.add(burn);
+
+  // Generic skyline
+  const avoid = (x, z) =>
+    (x > -8 && x < 0 && z > -2.5 && z < 4.5) ||
+    (x > 1.5 && x < 10 && z > -6.5 && z < 2.5) ||
+    (x > 3 && x < 14 && z > 3 && z < 10.5) ||
+    Math.abs(x - 1) < 1.2 || Math.abs(z + 8) < 1.2 ||
+    (x > -5 && x < -1 && z > 13);
+  const count = small ? 90 : 150;
+  for (let i = 0, tries = 0; i < count && tries < 3000; tries++) {
+    const x = (Math.random() - .5) * 60, z = -26 + Math.random() * 40;
+    if (avoid(x, z)) continue;
+    const dist = Math.hypot(x + 1, z - 1);
+    const h = .6 + Math.random() * 1.2 + Math.random() * 6 * Math.exp(-((dist / 11) ** 2));
+    block(.8 + Math.random() * 1.4, h, .8 + Math.random() * 1.4, x, z, wallMats[i % 3]);
+    i++;
+  }
+
+  // Absolute World: stacked elliptical floor plates, each turned a little
+  function twistTower(x, z, floors, phase) {
+    const g = new THREE.Group();
+    const slab = new THREE.CylinderGeometry(1, 1, .09, 40);
+    const mat = new THREE.MeshStandardMaterial({ color: 0xeee9ff, emissive: 0x8b5cf6, emissiveIntensity: .45, roughness: .35, metalness: .2 });
+    const inst = new THREE.InstancedMesh(slab, mat, floors);
+    const m = new THREE.Matrix4(), q = new THREE.Quaternion(), s = new THREE.Vector3(1.25, 1, .82), p = new THREE.Vector3(), up = new THREE.Vector3(0, 1, 0);
+    let a = phase;
+    for (let i = 0; i < floors; i++) {
+      a += .045 + .1 * Math.sin((i / floors) * Math.PI);
+      p.set(0, i * .22 + .1, 0); q.setFromAxisAngle(up, a);
+      m.compose(p, q, s); inst.setMatrixAt(i, m);
+    }
+    g.add(inst);
+    const coreTex = windowTex(.7);
+    coreTex.repeat.set(6, floors / 6);
+    const core = new THREE.Mesh(new THREE.CylinderGeometry(.92, .92, floors * .22, 32, 1, true),
+      new THREE.MeshStandardMaterial({ color: 0x2a1f60, emissive: 0xffffff, emissiveMap: coreTex, emissiveIntensity: 1, roughness: .2, metalness: .6 }));
+    core.scale.set(1.12, 1, .74); core.position.y = floors * .11;
+    g.add(core);
+    g.position.set(x, 0, z);
+    scene.add(g);
+    return floors * .22;
+  }
+  const hA = twistTower(-5, 0, 56, 0);
+  const hB = twistTower(-2.4, 2.2, 50, 1.2);
+
+  // City Hall: base, rotunda, pyramid, clock tower
+  const civic = new THREE.Group(); civic.position.set(5.5, 0, -3.5); scene.add(civic);
+  const stone = new THREE.MeshStandardMaterial({ color: 0x3a3060, roughness: .8, emissive: 0xffffff, emissiveMap: winTex[2], emissiveIntensity: .7 });
+  const stoneRoof = new THREE.MeshStandardMaterial({ color: 0x4a3d7a, roughness: .7 });
+  const base = new THREE.Mesh(new THREE.BoxGeometry(6, 1.6, 3.6), stone); base.position.y = .8; civic.add(base);
+  const rot = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.1, 2.6, 28), stone); rot.position.set(-1.8, 1.3, .9); civic.add(rot);
+  const dome = new THREE.Mesh(new THREE.ConeGeometry(1.3, .8, 28), stoneRoof); dome.position.set(-1.8, 3, .9); civic.add(dome);
+  const cube = new THREE.Mesh(new THREE.BoxGeometry(2.4, 1.8, 2.4), stone); cube.position.set(.9, 2.5, 0); civic.add(cube);
+  const pyr = new THREE.Mesh(new THREE.ConeGeometry(1.9, 1.6, 4), stoneRoof); pyr.rotation.y = Math.PI / 4; pyr.position.set(.9, 4.2, 0); civic.add(pyr);
+  const towerMat = new THREE.MeshStandardMaterial({ color: 0x4a3d7a, roughness: .6 });
+  for (const [px, pz] of [[-.3, -.3], [.3, -.3], [-.3, .3], [.3, .3]]) {
+    const post = new THREE.Mesh(new THREE.BoxGeometry(.12, 6.2, .12), towerMat); post.position.set(2.6 + px, 3.1, 1.2 + pz); civic.add(post);
+  }
+  const clockTop = new THREE.Mesh(new THREE.BoxGeometry(.8, .8, .8), towerMat); clockTop.position.set(2.6, 6.4, 1.2); civic.add(clockTop);
+  const face = new THREE.Mesh(new THREE.CircleGeometry(.3, 24), new THREE.MeshBasicMaterial({ color: 0xffb547 }));
+  face.position.set(2.6, 6.4, 1.61); civic.add(face);
+  // Celebration Square with a glowing rink and a crowd of lights
+  const square = new THREE.Mesh(new THREE.PlaneGeometry(5.5, 3.2), new THREE.MeshStandardMaterial({ color: 0x241b52, roughness: .9 }));
+  square.rotation.x = -Math.PI / 2; square.position.set(5.6, .04, .6); scene.add(square);
+  const rink = new THREE.Mesh(new THREE.CircleGeometry(.9, 32), new THREE.MeshBasicMaterial({ color: 0x6ad8ff, transparent: true, opacity: .55 }));
+  rink.rotation.x = -Math.PI / 2; rink.scale.set(1.6, 1, 1); rink.position.set(6.6, .06, .8); scene.add(rink);
+  const crowdN = 160, crowdPos = new Float32Array(crowdN * 3);
+  for (let i = 0; i < crowdN; i++) { crowdPos[i * 3] = 3.1 + Math.random() * 5; crowdPos[i * 3 + 1] = .12; crowdPos[i * 3 + 2] = -.8 + Math.random() * 2.8; }
+  const crowdGeo = new THREE.BufferGeometry(); crowdGeo.setAttribute('position', new THREE.BufferAttribute(crowdPos, 3));
+  const crowd = new THREE.Points(crowdGeo, new THREE.PointsMaterial({ color: 0xffd59a, size: .09, transparent: true, opacity: .9 }));
+  scene.add(crowd);
+
+  // Square One: wide low blocks with glowing roof edges
+  const mallMat = new THREE.MeshStandardMaterial({ color: 0x241c4f, roughness: .8, emissive: 0xffffff, emissiveMap: winTex[1], emissiveIntensity: .6 });
+  const edgeMat = new THREE.LineBasicMaterial({ color: 0xb79cff });
+  for (const [w, h, d, x, z] of [[8, 1.3, 4, 8.5, 6], [4, 1.9, 3, 7, 8.6], [3, 1.1, 5, 11.8, 7.2]]) {
+    const b = block(w, h, d, x, z, mallMat);
+    const e = new THREE.LineSegments(new THREE.EdgesGeometry(b.geometry), edgeMat);
+    e.position.copy(b.position); scene.add(e);
+  }
+
+  // Toronto Pearson: runways with edge lights, terminal, departing plane
+  const runMat = new THREE.MeshBasicMaterial({ color: 0x1d1745 });
+  const lightPos = [];
+  for (const rz of [-33, -37.5]) {
+    const r = new THREE.Mesh(new THREE.PlaneGeometry(52, 1.2), runMat);
+    r.rotation.x = -Math.PI / 2; r.position.set(0, .03, rz); scene.add(r);
+    for (let x = -26; x <= 26; x += 1.3) lightPos.push(x, .08, rz - .6, x, .08, rz + .6);
+  }
+  const rlGeo = new THREE.BufferGeometry(); rlGeo.setAttribute('position', new THREE.Float32BufferAttribute(lightPos, 3));
+  scene.add(new THREE.Points(rlGeo, new THREE.PointsMaterial({ color: 0xffb547, size: .14 })));
+  block(9, 1.4, 2.6, -8, -28.6, wallMats[1]);
+  const plane = new THREE.Group();
+  const hull = new THREE.MeshStandardMaterial({ color: 0xdcd6f5, roughness: .5, emissive: 0x3a2a80, emissiveIntensity: .4 });
+  const fus = new THREE.Mesh(new THREE.CylinderGeometry(.14, .1, 1.6, 10), hull); fus.rotation.z = Math.PI / 2; plane.add(fus);
+  plane.add(new THREE.Mesh(new THREE.BoxGeometry(.38, .03, 1.6), hull));
+  const tail = new THREE.Mesh(new THREE.BoxGeometry(.25, .35, .03), hull); tail.position.set(-.7, .18, 0); plane.add(tail);
+  const beacon = new THREE.Mesh(new THREE.SphereGeometry(.06, 8, 8), new THREE.MeshBasicMaterial({ color: 0xff4d6d })); beacon.position.set(0, .03, .82); plane.add(beacon);
+  const beacon2 = new THREE.Mesh(new THREE.SphereGeometry(.06, 8, 8), new THREE.MeshBasicMaterial({ color: 0x4dffa6 })); beacon2.position.set(0, .03, -.82); plane.add(beacon2);
+  plane.scale.setScalar(1.4);
+  scene.add(plane);
+
+  // Port Credit Lighthouse on its pier, with a sweeping beam
+  const pier = new THREE.Mesh(new THREE.BoxGeometry(.9, .2, 4), new THREE.MeshStandardMaterial({ color: 0x3a3060 }));
+  pier.position.set(-3, .1, 17.6); scene.add(pier);
+  const lh = new THREE.Group(); lh.position.set(-3, .2, 19.4); scene.add(lh);
+  const lhBody = new THREE.Mesh(new THREE.CylinderGeometry(.32, .52, 2.6, 8), new THREE.MeshStandardMaterial({ color: 0xf3efff, roughness: .6, emissive: 0x3a2a80, emissiveIntensity: .35 }));
+  lhBody.position.y = 1.3; lh.add(lhBody);
+  const lantern = new THREE.Mesh(new THREE.CylinderGeometry(.3, .3, .4, 8), new THREE.MeshBasicMaterial({ color: 0xffd27a }));
+  lantern.position.y = 2.8; lh.add(lantern);
+  const cap = new THREE.Mesh(new THREE.ConeGeometry(.42, .4, 8), new THREE.MeshStandardMaterial({ color: 0xc23b55 }));
+  cap.position.y = 3.2; lh.add(cap);
+  const beamPivot = new THREE.Group(); beamPivot.position.y = 2.8; lh.add(beamPivot);
+  const beamGeo = new THREE.ConeGeometry(1.4, 16, 24, 1, true); beamGeo.translate(0, -8, 0); beamGeo.rotateZ(Math.PI / 2);
+  beamPivot.add(new THREE.Mesh(beamGeo, new THREE.MeshBasicMaterial({ color: 0xffc46b, transparent: true, opacity: .14, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide })));
+  const lhLight = new THREE.PointLight(0xffc46b, 1.2, 10); lhLight.position.y = 2.8; lh.add(lhLight);
+
+  // CN Tower on the horizon, across the lake in Toronto
+  const cn = new THREE.Group(); cn.position.set(62, 0, 10); scene.add(cn);
+  const cnMat = new THREE.MeshStandardMaterial({ color: 0x2b2160, emissive: 0x8b5cf6, emissiveIntensity: .35 });
+  const shaft = new THREE.Mesh(new THREE.CylinderGeometry(.35, 1.1, 22, 12), cnMat); shaft.position.y = 11; cn.add(shaft);
+  const pod = new THREE.Mesh(new THREE.SphereGeometry(1.6, 20, 12), cnMat); pod.scale.y = .5; pod.position.y = 17; cn.add(pod);
+  const mast = new THREE.Mesh(new THREE.CylinderGeometry(.06, .2, 10, 6), cnMat); mast.position.y = 27; cn.add(mast);
+  const tip = new THREE.Mesh(new THREE.SphereGeometry(.2, 8, 8), new THREE.MeshBasicMaterial({ color: 0xff4d6d })); tip.position.y = 32; cn.add(tip);
+
+  // Stars
+  const starPos = [];
+  for (let i = 0; i < 900; i++) {
+    const t = Math.random() * Math.PI * 2, u = Math.random() * .9 + .08, r = 150;
+    starPos.push(r * Math.cos(t) * Math.sqrt(1 - u * u), r * u, r * Math.sin(t) * Math.sqrt(1 - u * u));
+  }
+  const starGeo = new THREE.BufferGeometry(); starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPos, 3));
+  scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xd9ccff, size: .6, fog: false })));
+
+  // Traffic of light along the two roads
+  const carN = small ? 70 : 140;
+  const cars = [], carPos = new Float32Array(carN * 3), carCol = new Float32Array(carN * 3);
+  for (let i = 0; i < carN; i++) {
+    const dir = Math.random() < .5 ? 1 : -1;
+    cars.push({ road: i % 2, dir, s: Math.random(), v: .02 + Math.random() * .03 });
+    carCol.set(dir > 0 ? [1, .84, .55] : [1, .3, .4], i * 3);
+  }
+  const carGeo = new THREE.BufferGeometry();
+  carGeo.setAttribute('position', new THREE.BufferAttribute(carPos, 3));
+  carGeo.setAttribute('color', new THREE.BufferAttribute(carCol, 3));
+  scene.add(new THREE.Points(carGeo, new THREE.PointsMaterial({ size: .16, vertexColors: true, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })));
+  const placeCars = () => {
+    for (let i = 0; i < carN; i++) {
+      const c = cars[i];
+      carPos.set(c.road === 0 ? [1 + c.dir * .22, .1, -40 + c.s * 56] : [-32 + c.s * 64, .1, -8 + c.dir * .22], i * 3);
+    }
+    carGeo.attributes.position.needsUpdate = true;
+  };
+
+  // Cloud layer: data arcs between landmarks with packets travelling along them
+  const nodes = {
+    absolute: new THREE.Vector3(-5, hA + .3, 0),
+    civic: new THREE.Vector3(8.1, 6.9, -2.3),
+    mall: new THREE.Vector3(8.5, 1.5, 6),
+    yyz: new THREE.Vector3(-8, 1.6, -28.6),
+    port: new THREE.Vector3(-3, 3.4, 19.4),
+    absB: new THREE.Vector3(-2.4, hB + .3, 2.2),
+  };
+  const links = [['absolute', 'civic'], ['civic', 'mall'], ['mall', 'port'], ['port', 'absB'], ['absolute', 'yyz'], ['yyz', 'civic'], ['absB', 'mall']];
+  const arcMat = new THREE.LineBasicMaterial({ color: 0x9b74ff, transparent: true, opacity: .45 });
+  const packetGeo = new THREE.SphereGeometry(.13, 10, 10);
+  const packetMat = new THREE.MeshBasicMaterial({ color: 0xffb547 });
+  const packets = [];
+  for (const [a, b] of links) {
+    const p0 = nodes[a], p2 = nodes[b];
+    const mid = p0.clone().lerp(p2, .5); mid.y += 4 + p0.distanceTo(p2) * .25;
+    const curve = new THREE.QuadraticBezierCurve3(p0, mid, p2);
+    scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(curve.getPoints(60)), arcMat));
+    for (let k = 0; k < 3; k++) {
+      const m = new THREE.Mesh(packetGeo, packetMat); scene.add(m);
+      packets.push({ m, curve, t: k / 3 + Math.random() * .1, v: .06 + Math.random() * .05 });
+    }
+  }
+  const placePackets = () => { for (const p of packets) p.m.position.copy(p.curve.getPoint(p.t)); };
+
+  // Floating service labels above each landmark
+  function rr(g, x, y, w, h, r) { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
+  function label(title, sub, pos) {
+    const c = document.createElement('canvas'); c.width = 512; c.height = 136;
+    const g = c.getContext('2d');
+    rr(g, 4, 4, 504, 128, 22); g.fillStyle = 'rgba(18,12,46,.88)'; g.fill();
+    g.lineWidth = 3; g.strokeStyle = '#8b5cf6'; g.stroke();
+    g.fillStyle = '#ffb547'; g.font = '500 28px "JetBrains Mono", monospace'; g.fillText(sub, 30, 50);
+    g.fillStyle = '#f1eefb'; g.font = '700 44px "Bricolage Grotesque", sans-serif'; g.fillText(title, 30, 104);
+    const tex = new THREE.CanvasTexture(c); tex.encoding = THREE.sRGBEncoding;
+    const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false }));
+    s.scale.set(4.2, 1.12, 1); s.position.copy(pos); scene.add(s);
+    scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([pos.clone().setY(pos.y - .6), pos.clone().setY(pos.y - 3)]), arcMat));
+  }
+  const addLabels = () => {
+    label('AWS Lambda', 'ABSOLUTE WORLD', new THREE.Vector3(-5, hA + 3.6, 0));
+    label('Meetups', 'CELEBRATION SQ.', new THREE.Vector3(8.1, 10.3, -2.3));
+    label('Amazon S3', 'SQUARE ONE', new THREE.Vector3(8.5, 5, 6));
+    label('CloudFront', 'YYZ PEARSON', new THREE.Vector3(-8, 5, -28.6));
+    label('Start here', 'PORT CREDIT', new THREE.Vector3(-3, 6.8, 19.4));
+  };
+  (document.fonts && document.fonts.ready ? Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 1500))]) : Promise.resolve()).then(addLabels);
+
+  // Landmark stops: orbit centre, radius, height, starting angle, caption
+  const V = (x, y, z) => new THREE.Vector3(x, y, z);
+  const stops = [
+    { c: V(0, 3, -2),      r: 36, h: 20, a: .55, t: 'Mississauga, connected', s: '', d: 'Five landmarks, linked by the AWS services we talk about at our meetups. Pick one to fly there.' },
+    { c: V(-3.8, 6.5, 1),  r: 14, h: 4,  a: -.9, t: 'Absolute World Towers', s: 'AWS LAMBDA', d: 'Two towers of 56 and 50 storeys, each floor turned a little from the one below. Like good serverless design, they bend without breaking.' },
+    { c: V(5.5, 3, -2),    r: 12, h: 4,  a: .9,  t: 'City Hall & Celebration Square', s: 'MEETUPS', d: 'The clock tower watches over the city\'s public square. Our meetups are a public square for builders.' },
+    { c: V(8.5, 1, 6.5),   r: 13, h: 6,  a: .7,  t: 'Square One', s: 'AMAZON S3', d: 'The downtown grew around this one spot. Every architecture has a centre of gravity too: its data.' },
+    { c: V(-2, 2, -33),    r: 17, h: 7,  a: .5,  t: 'Toronto Pearson', s: 'CLOUDFRONT', d: 'Canada\'s busiest airport sits inside Mississauga. Pearson moves people, CloudFront moves data: one takes hours, the other milliseconds.' },
+    { c: V(-3, 2.2, 19.4), r: 9,  h: 2.5, a: .6, t: 'Port Credit Lighthouse', s: 'START HERE', d: 'Where the Credit River meets Lake Ontario. New to AWS? Beginner labs and first-talk help start here.' },
+  ];
+  const cur = { c: stops[0].c.clone(), r: stops[0].r, h: stops[0].h, a: stops[0].a };
+  let goal = stops[0];
+  let drag = 0, dragV = 0, autoA = 0;
+
+  const capT = document.getElementById('cap-title'), capD = document.getElementById('cap-text');
+  const buttons = [...box.querySelectorAll('[data-stop]')];
+  function go(i) {
+    goal = stops[i];
+    // take the short way round to the new starting angle
+    const full = cur.a + autoA + drag;
+    autoA = 0; drag = 0;
+    cur.a = full;
+    const diff = ((goal.a - full) % (Math.PI * 2) + Math.PI * 3) % (Math.PI * 2) - Math.PI;
+    goal = Object.assign({}, goal, { a: full + diff });
+    buttons.forEach((b, k) => b.setAttribute('aria-pressed', k === i));
+    capT.innerHTML = stops[i].t + (stops[i].s ? ' <i>' + stops[i].s + '</i>' : '');
+    capD.textContent = stops[i].d;
+  }
+  buttons.forEach((b, i) => b.addEventListener('click', () => go(i)));
+
+  // Drag to rotate
+  let down = null;
+  canvas.addEventListener('pointerdown', e => { down = e.clientX; canvas.setPointerCapture(e.pointerId); });
+  canvas.addEventListener('pointermove', e => { if (down === null) return; const dx = e.clientX - down; down = e.clientX; drag -= dx * .008; dragV = -dx * .008; });
+  const up = () => { down = null; };
+  canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', up);
+
+  function resize() {
+    const w = box.clientWidth, h = box.clientHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  new ResizeObserver(resize).observe(box); resize();
+
+  let visible = true;
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(box);
+
+  placeCars(); placePackets();
+  plane.position.set(4, 2, -33); plane.rotation.z = .2;
+
+  const clock = new THREE.Clock();
+  const tmp = new THREE.Vector3();
+  let first = true;
+  function frame() {
+    requestAnimationFrame(frame);
+    const dt = Math.min(clock.getDelta(), .05);
+    if (!visible && !first) return;
+    const t = clock.elapsedTime;
+    const k = first ? 1 : 1 - Math.pow(.02, dt);
+    first = false;
+    cur.c.lerp(goal.c, k); cur.r += (goal.r - cur.r) * k; cur.h += (goal.h - cur.h) * k; cur.a += (goal.a - cur.a) * k;
+    if (!reduced) { if (down === null) { drag += dragV; dragV *= .92; } autoA += dt * .06; }
+    const a = cur.a + autoA + drag;
+    camera.position.set(cur.c.x + Math.sin(a) * cur.r, cur.c.y + cur.h, cur.c.z + Math.cos(a) * cur.r);
+    camera.lookAt(tmp.copy(cur.c));
+
+    if (!reduced) {
+      for (const p of packets) p.t = (p.t + p.v * dt) % 1;
+      placePackets();
+      for (const c of cars) c.s = (c.s + c.v * dt * c.dir + 1) % 1;
+      placeCars();
+      beamPivot.rotation.y = t * .9;
+      const px = -26 + ((t % 16) / 16) * 70;
+      plane.position.set(px, .25 + Math.max(0, px + 4) * .22, -33);
+      plane.rotation.z = px > -4 ? .2 : 0;
+      beacon.visible = beacon2.visible = Math.sin(t * 6) > 0;
+      crowd.material.opacity = .65 + Math.sin(t * 3) * .25;
+      tip.visible = Math.sin(t * 2) > -.3;
+    }
+    renderer.render(scene, camera);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>

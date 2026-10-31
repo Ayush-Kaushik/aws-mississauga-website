@@ -1,0 +1,341 @@
+<title>AWS Mississauga Kickoff Brief</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: a meeting brief in the website's palette. Status first, then scope, priorities, people and actions. One column, sticky contents on wide screens. */
+:root {
+  --bg: #faf8ff;
+  --panel: #ffffff;
+  --tint: #f1ecff;
+  --line: #e1d9f7;
+  --fg: #1a1233;
+  --muted: #5d5480;
+  --accent: #6d3fe0;
+  --amber: #b45309;
+  --amber-bg: #fff4e0;
+  --ok: #15803d;
+  --ok-bg: #eafaf0;
+  --todo: #b42318;
+  --todo-bg: #fdeceb;
+  --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body: "Figtree", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d0a1c; --panel: #1b1536; --tint: #15102b; --line: #2e2652;
+    --fg: #f1eefb; --muted: #a49cc4; --accent: #c4b0ff; --amber: #ffb547; --amber-bg: #2a1f10;
+    --ok: #4ade80; --ok-bg: #0f2a1a; --todo: #ff8a80; --todo-bg: #2e1416;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d0a1c; --panel: #1b1536; --tint: #15102b; --line: #2e2652;
+  --fg: #f1eefb; --muted: #a49cc4; --accent: #c4b0ff; --amber: #ffb547; --amber-bg: #2a1f10;
+  --ok: #4ade80; --ok-bg: #0f2a1a; --todo: #ff8a80; --todo-bg: #2e1416;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font: 400 1rem/1.65 var(--body); }
+a { color: var(--accent); }
+.page { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: clamp(2rem, 5vw, 3.5rem) 4rem; display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 3rem; }
+nav.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 1.5rem); align-self: start; display: grid; gap: .35rem; font-size: .88rem; }
+nav.toc b { font: 500 .7rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: .5rem; }
+nav.toc a { color: var(--muted); text-decoration: none; padding: .15rem 0; }
+nav.toc a:hover { color: var(--fg); }
+@media (max-width: 900px) { .page { grid-template-columns: 1fr; } nav.toc { display: none; } }
+main { min-width: 0; display: grid; gap: 3.25rem; }
+h1, h2, h3 { font-family: var(--display); line-height: 1.12; margin: 0; text-wrap: balance; letter-spacing: -0.015em; }
+h1 { font-size: clamp(2.1rem, 5vw, 3.1rem); font-weight: 800; }
+h2 { font-size: 1.65rem; font-weight: 800; }
+h3 { font-size: 1.08rem; font-weight: 600; }
+p, ul, ol { margin: 0; max-width: 70ch; }
+ul, ol { padding-left: 1.2rem; display: grid; gap: .35rem; }
+section { display: grid; gap: 1rem; scroll-margin-top: 1rem; }
+.eyebrow { font: 500 .72rem/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+.muted { color: var(--muted); }
+header.doc { display: grid; gap: 1rem; padding-bottom: 2rem; border-bottom: 1px solid var(--line); }
+.meta { display: flex; flex-wrap: wrap; gap: .4rem 1.25rem; font: 500 .78rem/1.4 var(--mono); color: var(--muted); }
+.links { display: flex; flex-wrap: wrap; gap: .6rem; }
+.links a { font: 600 .9rem/1 var(--body); padding: .65rem .9rem; border-radius: 9px; border: 1px solid var(--line); background: var(--panel); text-decoration: none; }
+.links a:hover { border-color: var(--accent); }
+
+/* Status board */
+.status { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+@media (max-width: 860px) { .status { grid-template-columns: 1fr; } }
+.col { border: 1px solid var(--line); border-radius: 14px; background: var(--panel); overflow: hidden; display: grid; align-content: start; }
+.col-head { display: flex; justify-content: space-between; align-items: center; gap: .5rem; padding: .85rem 1.1rem; border-bottom: 1px solid var(--line); }
+.col-head h3 { font-size: 1rem; }
+.count { font: 500 .72rem/1 var(--mono); padding: .3rem .5rem; border-radius: 6px; }
+.done .count { background: var(--ok-bg); color: var(--ok); }
+.part .count { background: var(--amber-bg); color: var(--amber); }
+.todo .count { background: var(--todo-bg); color: var(--todo); }
+.col ul { list-style: none; padding: .9rem 1.1rem 1.1rem; gap: .7rem; max-width: none; }
+.col li { display: grid; gap: .15rem; font-size: .93rem; padding-left: 1.1rem; position: relative; }
+.col li::before { content: ""; position: absolute; left: 0; top: .55em; width: 7px; height: 7px; border-radius: 50%; }
+.done li::before { background: var(--ok); }
+.part li::before { background: var(--amber); }
+.todo li::before { background: var(--todo); }
+.col li span { color: var(--muted); font-size: .86rem; }
+
+/* MVP */
+.milestones { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+@media (max-width: 860px) { .milestones { grid-template-columns: 1fr; } }
+.ms { padding: 1.25rem; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); display: grid; gap: .7rem; align-content: start; }
+.ms.key { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
+.ms .tag { font: 500 .68rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--amber); }
+.ms ul { font-size: .93rem; }
+.ms p.goal { font-size: .9rem; color: var(--muted); padding-top: .6rem; border-top: 1px dashed var(--line); }
+.ms p.goal b { color: var(--fg); }
+.out { padding: 1rem 1.2rem; border-radius: 12px; border: 1px dashed var(--line); color: var(--muted); font-size: .94rem; }
+.out b { color: var(--fg); }
+
+/* Direction */
+.principles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+@media (max-width: 760px) { .principles { grid-template-columns: 1fr; } }
+.pr { padding: 1.1rem 1.2rem; border-left: 3px solid var(--accent); background: var(--tint); border-radius: 0 12px 12px 0; display: grid; gap: .3rem; }
+.pr p { color: var(--muted); font-size: .94rem; }
+
+/* Tables */
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+table { width: 100%; border-collapse: collapse; font-size: .92rem; min-width: 640px; }
+th, td { text-align: left; vertical-align: top; padding: .7rem .9rem; border-top: 1px solid var(--line); }
+thead th { border-top: 0; background: var(--tint); font: 500 .7rem/1.3 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+td:first-child { font-weight: 600; }
+td .sub { display: block; font-weight: 400; color: var(--muted); font-size: .86rem; }
+.p { display: inline-block; font: 500 .7rem/1 var(--mono); padding: .3rem .45rem; border-radius: 5px; white-space: nowrap; }
+.p0 { background: var(--todo-bg); color: var(--todo); }
+.p1 { background: var(--amber-bg); color: var(--amber); }
+.p2 { background: var(--tint); color: var(--accent); }
+.p3 { background: var(--tint); color: var(--muted); }
+.size { font: 500 .78rem var(--mono); color: var(--muted); }
+.blank { display: inline-block; min-width: 110px; border-bottom: 1px solid var(--muted); color: var(--muted); font-size: .85rem; }
+
+/* Agenda */
+.agenda { list-style: none; padding: 0; display: grid; gap: .5rem; max-width: none; }
+.agenda li { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 1rem; padding: .8rem 1rem; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); align-items: baseline; }
+.agenda li b.min { font: 500 .8rem/1 var(--mono); color: var(--amber); font-variant-numeric: tabular-nums; }
+.agenda li span { color: var(--muted); font-size: .9rem; display: block; }
+.decisions { counter-reset: d; list-style: none; padding: 0; display: grid; gap: .55rem; max-width: none; }
+.decisions li { counter-increment: d; display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: .5rem; padding: .8rem 1rem; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); }
+.decisions li::before { content: counter(d); font: 800 1rem/1.5 var(--display); color: var(--accent); }
+.decisions li span { color: var(--muted); font-size: .88rem; display: block; }
+</style>
+
+<div class="page">
+  <nav class="toc" aria-label="Contents">
+    <b>Contents</b>
+    <a href="#status">Where we are</a>
+    <a href="#mvp">MVP</a>
+    <a href="#direction">Direction</a>
+    <a href="#priorities">Priorities</a>
+    <a href="#roles">Responsibilities</a>
+    <a href="#next">Next steps</a>
+    <a href="#agenda">Meeting agenda</a>
+  </nav>
+
+  <main>
+    <header class="doc">
+      <span class="eyebrow">AWS User Group Mississauga · Website</span>
+      <h1>Website kickoff brief</h1>
+      <p class="muted">What's built, what's left, what we launch first, and who does what.</p>
+      <div class="meta"><span>Kickoff: 5 Nov 2026</span><span>Status as of 28 Oct 2026</span><span>For Warisha, Sanyam and the volunteer team</span></div>
+      <div class="links">
+        <a href="https://claude.ai/artifact/W3GokppsatRAaGA2ZaGUvj" target="_blank" rel="noopener">Website preview ↗</a>
+        <a href="https://claude.ai/artifact/7m1NxSFZGRV57aWKPmEfLf" target="_blank" rel="noopener">Backend plan ↗</a>
+      </div>
+    </header>
+
+    <section id="status">
+      <span class="eyebrow">Where we are</span>
+      <h2>Built, partly done, and still to do</h2>
+      <div class="status">
+        <div class="col done">
+          <div class="col-head"><h3>Built and checked</h3><span class="count">6</span></div>
+          <ul>
+            <li>All public sections from the wireframes<span>Home, About, Events (with Labs &amp; Jams), Speakers, Sponsors, Resources, Volunteers, Join</span></li>
+            <li>Interactive 3D Mississauga on the home page<span>Five landmarks, each linked to an AWS service</span></li>
+            <li>Content editing without code<span>Organizers, speakers, events and sponsors live in one file, checked before every deploy</span></li>
+            <li>Events with levels 100, 200 and 300<span>Past events move to "Latest meetup" on their own</span></li>
+            <li>Hosting code for AWS<span>S3 and CloudFront in Canada, budget alert, deploys from GitHub without stored keys</span></li>
+            <li>Backend plan for forms and portals<span>Architecture, security, data and phases</span></li>
+          </ul>
+        </div>
+        <div class="col part">
+          <div class="col-head"><h3>Partly done</h3><span class="count">6</span></div>
+          <ul>
+            <li>Content is edited in a file, not an admin page<span>Organizers, events, speakers and sponsors are changed in content.json. There's no sign-in admin page yet.</span></li>
+            <li>Four forms work on screen but send nothing<span>Volunteer, speaker, sponsor and newsletter</span></li>
+            <li>Placeholder content<span>Organizer names, sample events, sample labs, no sponsors yet</span></li>
+            <li>Links point to placeholders<span>Meetup links open a search, LinkedIn is generic</span></li>
+            <li>Labs and resources still in the page code<span>Not yet editable through the content file</span></li>
+            <li>Tested in desktop and phone sizes only<span>Not yet on real phones, older laptops or screen readers</span></li>
+          </ul>
+        </div>
+        <div class="col todo">
+          <div class="col-head"><h3>Not started</h3><span class="count">7</span></div>
+          <ul>
+            <li>Not live yet<span>No AWS account connected, no GitHub repo, no domain</span></li>
+            <li>Form backend<span>Secure storage, organizer alerts, spam protection</span></li>
+            <li>Admin portal<span>Organizer sign-in with MFA to add and edit organizers, events, speakers and sponsors, and to review form submissions</span></li>
+            <li>Member portal<span>Member accounts and the resource library</span></li>
+            <li>Privacy notice and our own Code of Conduct<span>Site currently links to AWS's Code of Conduct</span></li>
+            <li>Sharing previews<span>Image and text for when the link is posted on LinkedIn or WhatsApp</span></li>
+            <li>QR check-in and attendance tracking</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="mvp">
+      <span class="eyebrow">MVP</span>
+      <h2>Launch in three steps</h2>
+      <p class="muted">The MVP is the smallest version that lets people find us, sign up for events, and volunteer or offer a talk, with their details handled safely.</p>
+      <div class="milestones">
+        <div class="ms">
+          <span class="tag">Step 1 · Soft launch</span>
+          <h3>Live with real content</h3>
+          <ul>
+            <li>Site live on our own domain with HTTPS</li>
+            <li>Real organizers, next 2 to 3 events, real Meetup and LinkedIn links</li>
+            <li>Our Code of Conduct and a contact address</li>
+            <li>Forms hidden or marked "coming soon"</li>
+          </ul>
+          <p class="goal"><b>Goal:</b> share the link at the next meetup.</p>
+        </div>
+        <div class="ms key">
+          <span class="tag">Step 2 · MVP</span>
+          <h3>Forms that work, safely</h3>
+          <ul>
+            <li>Volunteer, speaker and sponsor forms stored securely in Canada</li>
+            <li>Organizers alerted by email, without applicant details in the email</li>
+            <li>Admin portal: organizer sign-in with MFA to review submissions and add or edit organizers, events, speakers and sponsors</li>
+            <li>Privacy notice on every form, spam protection</li>
+          </ul>
+          <p class="goal"><b>Goal:</b> a volunteer form reaches only the right reviewer.</p>
+        </div>
+        <div class="ms">
+          <span class="tag">Step 3 · After MVP</span>
+          <h3>Grow the community features</h3>
+          <ul>
+            <li>Newsletter with confirmed sign-up</li>
+            <li>Past-event slides and recordings</li>
+            <li>Member portal and resource library</li>
+            <li>QR check-in at meetups</li>
+          </ul>
+          <p class="goal"><b>Goal:</b> members come back to the site between meetups.</p>
+        </div>
+      </div>
+      <p class="out"><b>Not in the MVP:</b> member accounts, check-in and attendance exports. They're valuable, but they're not needed to launch.</p>
+    </section>
+
+    <section id="direction">
+      <span class="eyebrow">Direction</span>
+      <h2>How we'll make decisions</h2>
+      <div class="principles">
+        <div class="pr"><h3>Community first</h3><p>Every feature should help someone attend, learn, speak, volunteer or find work. If it doesn't, it waits.</p></div>
+        <div class="pr"><h3>The site is a learning project</h3><p>Built on AWS serverless services, in code, so volunteers gain real experience by building it.</p></div>
+        <div class="pr"><h3>Privacy by design</h3><p>Collect only what we need, keep it in Canada, never publish contact details, and delete data on schedule.</p></div>
+        <div class="pr"><h3>Knowledge sharing, not sales</h3><p>Sponsors and speakers share what they've built. Nobody sells from the stage or the site.</p></div>
+        <div class="pr"><h3>Every level is welcome</h3><p>Content is tagged 100, 200 and 300 so beginners and experts both find their place.</p></div>
+        <div class="pr"><h3>Ship small, ship often</h3><p>Small pull requests, reviewed by a second person, deployed automatically.</p></div>
+      </div>
+    </section>
+
+    <section id="priorities">
+      <span class="eyebrow">Development priorities</span>
+      <h2>What to build, in order</h2>
+      <p class="muted">P0 is needed for the soft launch, P1 for the MVP. Size is a rough guide: S is an evening, M a few evenings, L a couple of weeks of volunteer time.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Work</th><th>Priority</th><th>Size</th><th>Workstream</th></tr></thead>
+          <tbody>
+            <tr><td>AWS account, volunteer logins, budget alert<span class="sub">IAM Identity Center, one login per person</span></td><td><span class="p p0">P0</span></td><td class="size">S</td><td>Platform</td></tr>
+            <tr><td>GitHub repo and automatic deploys<span class="sub">Push the project, connect the deploy role</span></td><td><span class="p p0">P0</span></td><td class="size">S</td><td>DevOps</td></tr>
+            <tr><td>Choose and connect the domain<span class="sub">Certificate, DNS, HTTPS</span></td><td><span class="p p0">P0</span></td><td class="size">S</td><td>DevOps</td></tr>
+            <tr><td>Real content<span class="sub">Organizers and photos, next events, Meetup and LinkedIn links</span></td><td><span class="p p0">P0</span></td><td class="size">S</td><td>Content</td></tr>
+            <tr><td>Our Code of Conduct and contact address</td><td><span class="p p0">P0</span></td><td class="size">S</td><td>Content</td></tr>
+            <tr><td>Test on real phones, browsers and a screen reader</td><td><span class="p p0">P0</span></td><td class="size">S</td><td>QA</td></tr>
+            <tr><td>Form API and secure storage<span class="sub">API Gateway, Lambda, DynamoDB</span></td><td><span class="p p1">P1</span></td><td class="size">M</td><td>Backend</td></tr>
+            <tr><td>Admin portal<span class="sub">Sign-in with MFA (Cognito), roles, audit log. Review form submissions, and add or edit organizers, events, speakers and sponsors without touching files.</span></td><td><span class="p p1">P1</span></td><td class="size">L</td><td>Backend + Frontend</td></tr>
+            <tr><td>Organizer email alerts<span class="sub">SES, no personal details in emails</span></td><td><span class="p p1">P1</span></td><td class="size">S</td><td>Backend</td></tr>
+            <tr><td>Privacy notice, retention period, counsel review</td><td><span class="p p1">P1</span></td><td class="size">M</td><td>Privacy</td></tr>
+            <tr><td>Spam protection<span class="sub">WAF rate limits, hidden honeypot field</span></td><td><span class="p p1">P1</span></td><td class="size">S</td><td>DevOps</td></tr>
+            <tr><td>Newsletter with confirmed sign-up</td><td><span class="p p2">P2</span></td><td class="size">M</td><td>Backend</td></tr>
+            <tr><td>Labs and resources in the content file</td><td><span class="p p2">P2</span></td><td class="size">S</td><td>Frontend</td></tr>
+            <tr><td>Sharing previews and search basics</td><td><span class="p p2">P2</span></td><td class="size">S</td><td>Frontend</td></tr>
+            <tr><td>Member portal and resource library</td><td><span class="p p3">P3</span></td><td class="size">L</td><td>Backend + Frontend</td></tr>
+            <tr><td>QR check-in and attendance reports</td><td><span class="p p3">P3</span></td><td class="size">M</td><td>Backend + Frontend</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="roles">
+      <span class="eyebrow">Responsibilities</span>
+      <h2>Who owns what</h2>
+      <p class="muted">Fill in names at the kickoff. One owner per row, with helpers welcome.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Role</th><th>Responsible for</th><th>Owner</th></tr></thead>
+          <tbody>
+            <tr><td>Project leads</td><td>Final say on scope, priorities and launch dates. Approve sponsors and new organizer accounts.</td><td>Warisha &amp; Sanyam</td></tr>
+            <tr><td>Platform owner</td><td>AWS account, billing, budget alerts, volunteer logins and access reviews.</td><td><span class="blank">&nbsp;</span></td></tr>
+            <tr><td>Tech lead</td><td>Reviews pull requests, keeps the code healthy, unblocks volunteers.</td><td><span class="blank">&nbsp;</span></td></tr>
+            <tr><td>Frontend lead</td><td>Website pages, the 3D scene, organizer dashboard screens, accessibility fixes.</td><td><span class="blank">&nbsp;</span></td></tr>
+            <tr><td>Backend lead</td><td>Form API, data storage, sign-in, email alerts.</td><td><span class="blank">&nbsp;</span></td></tr>
+            <tr><td>DevOps lead</td><td>Deploy pipeline, domain, certificates, monitoring, spam protection.</td><td><span class="blank">&nbsp;</span></td></tr>
+            <tr><td>Content owner</td><td>Events, organizers, speakers and sponsors in the content file. Keeps the site current every month.</td><td><span class="blank">&nbsp;</span></td></tr>
+            <tr><td>Privacy &amp; security owner</td><td>Privacy notice, retention rules, deletion requests, quarterly access review.</td><td><span class="blank">&nbsp;</span></td></tr>
+            <tr><td>QA &amp; accessibility</td><td>Tests every release on real devices, keyboard and screen reader.</td><td><span class="blank">&nbsp;</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="next">
+      <span class="eyebrow">Next steps</span>
+      <h2>After the kickoff</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Action</th><th>Owner</th><th>By</th></tr></thead>
+          <tbody>
+            <tr><td>Agree the MVP scope and launch date</td><td>Project leads</td><td>At kickoff</td></tr>
+            <tr><td>Fill in the owners above</td><td>Everyone</td><td>At kickoff</td></tr>
+            <tr><td>Choose the domain name</td><td>Project leads</td><td><span class="blank">&nbsp;</span></td></tr>
+            <tr><td>Set up the AWS account and deploy Phase 0<span class="sub">Steps 1 to 5 in the project README</span></td><td>Platform owner</td><td><span class="blank">&nbsp;</span></td></tr>
+            <tr><td>Create the GitHub repo and add volunteers</td><td>Tech lead</td><td><span class="blank">&nbsp;</span></td></tr>
+            <tr><td>Collect real content: organizer names and photos, next events, links</td><td>Content owner</td><td><span class="blank">&nbsp;</span></td></tr>
+            <tr><td>Draft our Code of Conduct and privacy notice</td><td>Privacy &amp; security owner</td><td><span class="blank">&nbsp;</span></td></tr>
+            <tr><td>Soft launch: share the live link at the next meetup</td><td>Project leads</td><td><span class="blank">&nbsp;</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="agenda">
+      <span class="eyebrow">Kickoff agenda</span>
+      <h2>Suggested 60-minute meeting</h2>
+      <ul class="agenda">
+        <li><b class="min">10 min</b><div>Demo the website<span>The 3D city, each section, and how content is edited</span></div></li>
+        <li><b class="min">10 min</b><div>Where we are<span>Built, partly done, not started</span></div></li>
+        <li><b class="min">10 min</b><div>Agree the MVP<span>Soft launch, then forms that work safely</span></div></li>
+        <li><b class="min">15 min</b><div>Make the decisions below</div></li>
+        <li><b class="min">10 min</b><div>Roles and sign-ups<span>Fill in owners, volunteers pick their first tasks</span></div></li>
+        <li><b class="min">5 min</b><div>Next steps and dates</div></li>
+      </ul>
+      <h3 style="margin-top:1rem">Decisions needed at the kickoff</h3>
+      <ol class="decisions">
+        <li><div>What's our domain name?</div></li>
+        <li><div>Who owns the AWS account and pays the bill?<span>Our cost estimate is roughly $10 to $15 a month</span></div></li>
+        <li><div>What's the soft launch date and the MVP date?</div></li>
+        <li><div>Who are the first organizer accounts, and which forms does each person review?</div></li>
+        <li><div>How long do we keep form submissions?<span>Suggestion: 12 months after they're closed</span></div></li>
+        <li><div>Do we write our own Code of Conduct, or adopt an existing one?</div></li>
+        <li><div>Newsletter through AWS email, or an existing mailing tool?</div></li>
+      </ol>
+    </section>
+  </main>
+</div>

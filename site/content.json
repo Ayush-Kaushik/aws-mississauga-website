@@ -1,0 +1,140 @@
+{
+  "_help": "Edit this file to update the website. Keep every quote, comma and bracket. Dates are YYYY-MM-DD. Events move to 'Latest meetup' automatically once their date has passed. See README.md, section 'Updating content'.",
+  "organizers": [
+    {
+      "name": "Organizer name",
+      "role": "Group lead",
+      "photo": "",
+      "linkedin": ""
+    },
+    {
+      "name": "Organizer name",
+      "role": "Co-organizer",
+      "photo": "",
+      "linkedin": ""
+    },
+    {
+      "name": "Organizer name",
+      "role": "Co-organizer · Events",
+      "photo": "",
+      "linkedin": ""
+    }
+  ],
+  "speakers": [
+    {
+      "name": "Sangeeta",
+      "label": "Past speaker · Oct 2026",
+      "talk": "Amazon Quick: building a productivity agent",
+      "photo": "",
+      "linkedin": ""
+    },
+    {
+      "name": "Speaker name",
+      "label": "Featured speaker",
+      "talk": "Talk title",
+      "photo": "",
+      "linkedin": ""
+    },
+    {
+      "name": "Speaker name",
+      "label": "Featured speaker",
+      "talk": "Talk title",
+      "photo": "",
+      "linkedin": ""
+    }
+  ],
+  "events": [
+    {
+      "id": "bedrock",
+      "date": "2026-11-18",
+      "time": "6:30 PM ET",
+      "title": "Building agents with Amazon Bedrock",
+      "level": 200,
+      "tags": [
+        "Gen AI"
+      ],
+      "summary": "A walkthrough of agent design on Bedrock, followed by a live demo and Q&A.",
+      "venue": "Venue TBA · Mississauga",
+      "speaker": "Speaker TBA",
+      "rsvp": "https://www.meetup.com/find/?keywords=AWS%20User%20Group%20Mississauga",
+      "learn": [
+        "How Bedrock agents plan and call tools",
+        "Connecting an agent to your own data",
+        "Guardrails and cost basics"
+      ],
+      "agenda": [
+        "6:30 Doors, food and networking",
+        "7:00 Talk and live demo",
+        "8:00 Q&A, then wrap up"
+      ],
+      "prerequisites": "Comfortable with basic AWS console use. No machine learning background needed.",
+      "access": "Venue details, step-free access and the nearest MiWay and Hurontario LRT stops will be posted with the venue."
+    },
+    {
+      "id": "reinvent-recap",
+      "date": "2026-12-09",
+      "time": "6:30 PM ET",
+      "title": "re:Invent recap & holiday social",
+      "level": 100,
+      "tags": [
+        "re:Invent"
+      ],
+      "summary": "The biggest launches from re:Invent 2026, explained in ten-minute lightning talks. Snacks provided.",
+      "venue": "Venue TBA · Mississauga",
+      "speaker": "Community speakers",
+      "rsvp": "https://www.meetup.com/find/?keywords=AWS%20User%20Group%20Mississauga",
+      "learn": [
+        "The launches that matter for everyday builders",
+        "What's worth trying first"
+      ],
+      "agenda": [
+        "6:30 Doors and social",
+        "7:00 Lightning talks",
+        "8:00 Holiday social"
+      ],
+      "prerequisites": "None. Everyone welcome.",
+      "access": "Posted with the venue announcement."
+    },
+    {
+      "id": "serverless-lab",
+      "date": "2027-01-20",
+      "time": "6:30 PM ET",
+      "title": "Serverless from zero: Lambda, API Gateway & DynamoDB",
+      "level": 300,
+      "tags": [
+        "Workshop"
+      ],
+      "summary": "A hands-on lab. Leave with a working API deployed to your own AWS account.",
+      "venue": "Venue TBA · Mississauga",
+      "speaker": "Speaker TBA",
+      "rsvp": "https://www.meetup.com/find/?keywords=AWS%20User%20Group%20Mississauga",
+      "learn": [
+        "Writing and deploying a Lambda function",
+        "Exposing it with API Gateway",
+        "Storing data in DynamoDB"
+      ],
+      "agenda": [
+        "6:30 Setup help",
+        "7:00 Guided build",
+        "8:15 Show and tell"
+      ],
+      "prerequisites": "Bring a laptop. An AWS account on the Free Tier is recommended.",
+      "access": "Posted with the venue announcement."
+    },
+    {
+      "id": "amazon-quick",
+      "date": "2026-10-23",
+      "title": "Amazon Quick: building a productivity agent",
+      "summary": "A session with Sangeeta on putting a productivity agent to work with Amazon Quick.",
+      "venue": "Mississauga",
+      "materials": {
+        "recording": "",
+        "slides": "",
+        "photos": "",
+        "code": "",
+        "feedback": ""
+      }
+    }
+  ],
+  "sponsors": []
+}
