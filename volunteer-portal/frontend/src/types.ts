@@ -1,5 +1,4 @@
 export type UserRole = "volunteer" | "admin" | "member";
-export type TaskStatus = "available" | "claimed" | "completed";
 
 export interface User {
   id: string;
@@ -11,14 +10,6 @@ export interface User {
 export interface Session {
   token: string;
   user: User;
-}
-
-export interface VolunteerTask {
-  id: string;
-  title: string;
-  description: string;
-  status: TaskStatus;
-  claimedBy: string | null;
 }
 
 export type InquiryCategory = string;

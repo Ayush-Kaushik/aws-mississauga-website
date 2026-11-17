@@ -3,7 +3,6 @@ import cors from "cors";
 import express, { type NextFunction, type Request, type Response } from "express";
 
 type Role = "volunteer" | "admin" | "member";
-type TaskStatus = "available" | "claimed" | "completed";
 type InquiryCategory = string;
 type InquiryStatus = "new" | "in_progress" | "contacted" | "closed";
 
@@ -13,14 +12,6 @@ interface User {
   password: string;
   role: Role;
   inquiryCategories: InquiryCategory[];
-}
-
-interface VolunteerTask {
-  id: string;
-  title: string;
-  description: string;
-  status: TaskStatus;
-  claimedBy: string | null;
 }
 
 interface FollowUpActivity {
@@ -56,13 +47,6 @@ const users: User[] = [
 ];
 
 const inquiryCategories: InquiryCategory[] = ["volunteer", "sponsor", "speaker"];
-
-const tasks: VolunteerTask[] = [
-  { id: "task-welcome-table", title: "Welcome table host", description: "Greet attendees, help them check in, and point first-time guests toward the refreshments.", status: "available", claimedBy: null },
-  { id: "task-speaker-support", title: "Speaker support", description: "Coordinate with the evening's speaker and help them get settled before the session.", status: "available", claimedBy: null },
-  { id: "task-photo-recap", title: "Community photo recap", description: "Capture a few candid moments during the meetup for the post-event community recap.", status: "claimed", claimedBy: "volunteer-alex" },
-  { id: "task-room-reset", title: "Room reset", description: "Help return the venue to its original layout after the meetup wraps up.", status: "completed", claimedBy: null },
-];
 
 const inquiries: Inquiry[] = [
   { id: "inquiry-volunteer-priya", category: "volunteer", name: "Priya Shah", email: "priya.shah@example.com", organization: "", receivedAt: "2026-11-16", message: "I would love to help welcome attendees and support the next community meetup.", status: "new", ownerId: "volunteer-alex", followUps: [] },
@@ -112,16 +96,6 @@ function requireRole(role: Role) {
     }
     next();
   };
-}
-
-function getTask(id: string, response: Response): VolunteerTask | undefined {
-  const task = tasks.find((candidate) => candidate.id === id);
-  if (!task) response.status(404).json({ error: "Task not found." });
-  return task;
-}
-
-function taskId(request: Request): string {
-  return request.params.id as string;
 }
 
 function canAccessInquiry(user: Omit<User, "password">, inquiry: Inquiry): boolean {
@@ -278,91 +252,6 @@ app.post("/inquiries/:id/follow-ups", authenticate, (request: AuthenticatedReque
   };
   inquiry.followUps.push(activity);
   response.status(201).json(activity);
-});
-
-app.get("/tasks", authenticate, (request: AuthenticatedRequest, response: Response) => {
-  const user = request.user!;
-  const visibleTasks = user.role === "admin"
-    ? tasks
-    : tasks.filter((task) => task.status === "available" || (task.status === "claimed" && task.claimedBy === user.id));
-  response.json(visibleTasks);
-});
-
-app.post("/tasks", authenticate, requireRole("admin"), (request: AuthenticatedRequest, response: Response) => {
-  const title = typeof request.body?.title === "string" ? request.body.title.trim() : "";
-  const description = typeof request.body?.description === "string" ? request.body.description.trim() : "";
-  if (!title || !description || title.length > 120 || description.length > 1000) {
-    response.status(400).json({ error: "A title (up to 120 characters) and description (up to 1000 characters) are required." });
-    return;
-  }
-  const task: VolunteerTask = { id: randomUUID(), title, description, status: "available", claimedBy: null };
-  tasks.push(task);
-  response.status(201).json(task);
-});
-
-app.put("/tasks/:id", authenticate, requireRole("admin"), (request: AuthenticatedRequest, response: Response) => {
-  const task = getTask(taskId(request), response);
-  if (!task) return;
-  const title = typeof request.body?.title === "string" ? request.body.title.trim() : "";
-  const description = typeof request.body?.description === "string" ? request.body.description.trim() : "";
-  if (!title || !description || title.length > 120 || description.length > 1000) {
-    response.status(400).json({ error: "A title (up to 120 characters) and description (up to 1000 characters) are required." });
-    return;
-  }
-  task.title = title;
-  task.description = description;
-  response.json(task);
-});
-
-app.delete("/tasks/:id", authenticate, requireRole("admin"), (request: AuthenticatedRequest, response: Response) => {
-  const taskIndex = tasks.findIndex((task) => task.id === taskId(request));
-  if (taskIndex === -1) {
-    response.status(404).json({ error: "Task not found." });
-    return;
-  }
-  tasks.splice(taskIndex, 1);
-  response.json({ success: true });
-});
-
-app.patch("/tasks/:id/claim", authenticate, requireRole("volunteer"), (request: AuthenticatedRequest, response: Response) => {
-  const task = getTask(taskId(request), response);
-  if (!task) return;
-  if (task.status !== "available") {
-    response.status(409).json({ error: "This task is no longer available." });
-    return;
-  }
-  task.status = "claimed";
-  task.claimedBy = request.user!.id;
-  response.json(task);
-});
-
-app.patch("/tasks/:id/unclaim", authenticate, requireRole("volunteer"), (request: AuthenticatedRequest, response: Response) => {
-  const task = getTask(taskId(request), response);
-  if (!task) return;
-  if (task.status !== "claimed" || task.claimedBy !== request.user!.id) {
-    response.status(409).json({ error: "You can only unclaim a task that you claimed." });
-    return;
-  }
-  task.status = "available";
-  task.claimedBy = null;
-  response.json(task);
-});
-
-app.patch("/tasks/:id/status", authenticate, requireRole("admin"), (request: AuthenticatedRequest, response: Response) => {
-  const task = getTask(taskId(request), response);
-  if (!task) return;
-  const status = request.body?.status as TaskStatus;
-  if (!["available", "claimed", "completed"].includes(status)) {
-    response.status(400).json({ error: "Status must be available, claimed, or completed." });
-    return;
-  }
-  if (status === "claimed" && !task.claimedBy) {
-    response.status(400).json({ error: "A task must be claimed by a volunteer before it can have claimed status." });
-    return;
-  }
-  task.status = status;
-  if (status === "available" || status === "completed") task.claimedBy = null;
-  response.json(task);
 });
 
 app.use((error: unknown, _request: Request, response: Response, _next: NextFunction) => {

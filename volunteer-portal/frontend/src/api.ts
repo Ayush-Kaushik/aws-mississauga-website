@@ -1,4 +1,4 @@
-import type { FollowUpActivity, Inquiry, InquiryStatus, Session, TaskStatus, User, VolunteerTask } from "./types";
+import type { FollowUpActivity, Inquiry, InquiryStatus, Session, User } from "./types";
 
 const apiUrl = (import.meta.env.VITE_API_URL || "http://localhost:3001").replace(/\/$/, "");
 
@@ -46,28 +46,6 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ note }),
     }),
-  tasks: (token: string) => request<VolunteerTask[]>("/tasks", token),
-  createTask: (token: string, title: string, description: string) =>
-    request<VolunteerTask>("/tasks", token, {
-      method: "POST",
-      body: JSON.stringify({ title, description }),
-    }),
-  editTask: (token: string, id: string, title: string, description: string) =>
-    request<VolunteerTask>(`/tasks/${id}`, token, {
-      method: "PUT",
-      body: JSON.stringify({ title, description }),
-    }),
-  deleteTask: (token: string, id: string) =>
-    request<{ success: true }>(`/tasks/${id}`, token, { method: "DELETE" }),
-  setStatus: (token: string, id: string, status: TaskStatus) =>
-    request<VolunteerTask>(`/tasks/${id}/status`, token, {
-      method: "PATCH",
-      body: JSON.stringify({ status }),
-    }),
-  claim: (token: string, id: string) =>
-    request<VolunteerTask>(`/tasks/${id}/claim`, token, { method: "PATCH" }),
-  unclaim: (token: string, id: string) =>
-    request<VolunteerTask>(`/tasks/${id}/unclaim`, token, { method: "PATCH" }),
 };
 
 export type { Session };
