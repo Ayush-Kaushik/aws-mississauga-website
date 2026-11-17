@@ -50,7 +50,7 @@ const inquiryCategories: InquiryCategory[] = ["volunteer", "sponsor", "speaker"]
 
 const inquiries: Inquiry[] = [
   { id: "inquiry-volunteer-priya", category: "volunteer", name: "Priya Shah", email: "priya.shah@example.com", organization: "", receivedAt: "2026-11-16", message: "I would love to help welcome attendees and support the next community meetup.", status: "new", ownerId: "volunteer-alex", followUps: [] },
-  { id: "inquiry-volunteer-marcus", category: "volunteer", name: "Marcus Lee", email: "marcus.lee@example.com", organization: "", receivedAt: "2026-11-14", message: "I have event photography experience and can help with the recap.", status: "in_progress", ownerId: "admin-1", followUps: [
+  { id: "inquiry-volunteer-marcus", category: "volunteer", name: "Marcus Lee", email: "marcus.lee@example.com", organization: "", receivedAt: "2026-11-14", message: "I have event photography experience and can help with the recap.", status: "in_progress", ownerId: "volunteer-alex", followUps: [
     { id: "followup-marcus-1", recordedAt: "2026-11-15T16:30:00.000Z", userId: "admin-1", userEmail: "admin@example.com", note: "Asked about availability for the December event." },
     { id: "followup-marcus-2", recordedAt: "2026-11-16T18:10:00.000Z", userId: "volunteer-alex", userEmail: "alex.volunteer@example.com", note: "Confirmed availability for the event setup window." },
   ] },

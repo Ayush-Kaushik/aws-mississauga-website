@@ -279,12 +279,12 @@ function InquiryDashboard({ session, onSignOut, activeView, onNavigate }: { sess
       {actionError && <p className="alert alert-error" role="alert">{actionError}</p>}
       {loading ? <Loading /> : error ? <ErrorState message={error} onRetry={() => void refresh()} /> : !accessibleCategories.length ? <EmptyState title="No categories assigned" text="Ask an admin to assign an inquiry category." /> : visibleInquiries.length ? (
         <section className="inquiry-table" aria-label={`${inquiryCategoryLabel(category)} inquiries`}>
-          <div className="inquiry-table-head"><span>Name</span><span>Received</span><span>Status</span><span>Assigned owner</span></div>
-          {visibleInquiries.map((inquiry) => <article className="inquiry-row" key={inquiry.id}>
+          <div className={session.user.role === "admin" ? "inquiry-table-head" : "inquiry-table-head inquiry-table-reviewer"}><span>Name</span><span>Received</span><span>Status</span>{session.user.role === "admin" && <span>Assigned owner</span>}</div>
+          {visibleInquiries.map((inquiry) => <article className={session.user.role === "admin" ? "inquiry-row" : "inquiry-row inquiry-row-reviewer"} key={inquiry.id}>
             <button className="inquiry-name" type="button" onClick={() => setSelected(inquiry)}><strong>{inquiry.name}</strong><span>{inquiry.organization || inquiry.email}</span></button>
             <span className="inquiry-date">{new Date(`${inquiry.receivedAt}T00:00:00`).toLocaleDateString("en-CA", { year: "numeric", month: "short", day: "numeric" })}</span>
             <span className={`inquiry-status inquiry-status-${inquiry.status}`}>{inquiryStatusLabels[inquiry.status]}</span>
-            <span className="inquiry-owner">{ownerName(inquiry.ownerId)}</span>
+            {session.user.role === "admin" && <span className="inquiry-owner">{ownerName(inquiry.ownerId)}</span>}
           </article>)}
         </section>
       ) : <EmptyState title="No matching inquiries" text="Try another status or check a different category." />}
@@ -328,7 +328,7 @@ function InquiryDetails({ session, inquiry, owners, onClose, onSave, onAddFollow
         <div className="modal-heading"><div><p className="eyebrow">{inquiry.category} inquiry · received {new Date(`${inquiry.receivedAt}T00:00:00`).toLocaleDateString("en-CA", { year: "numeric", month: "long", day: "numeric" })}</p><h2 id="inquiry-detail-title">{inquiry.name}</h2></div><button className="close-button" type="button" aria-label="Close" onClick={onClose}>×</button></div>
         <div className="inquiry-contact"><a href={`mailto:${inquiry.email}`}>{inquiry.email}</a>{inquiry.organization && <span>{inquiry.organization}</span>}</div>
         <p className="inquiry-message">{inquiry.message}</p>
-        <div className="inquiry-detail-facts"><span><small>Current status</small><b className={`inquiry-status inquiry-status-${inquiry.status}`}>{inquiryStatusLabels[inquiry.status]}</b></span><span><small>Assigned volunteer manager</small><b>{assignedOwner}</b></span></div>
+        <div className={session.user.role === "admin" ? "inquiry-detail-facts inquiry-detail-admin" : "inquiry-detail-facts"}><span><small>Current status</small><b className={`inquiry-status inquiry-status-${inquiry.status}`}>{inquiryStatusLabels[inquiry.status]}</b></span>{session.user.role === "admin" && <span><small>Assigned volunteer manager</small><b>{assignedOwner}</b></span>}</div>
         <section className="follow-up-history" aria-labelledby="follow-up-history-title">
           <div className="follow-up-heading"><h3 id="follow-up-history-title">Follow-up history</h3><span>{followUps.length}</span></div>
           {followUps.length ? <ol>{followUps.map((activity) => <li key={activity.id}><div className="follow-up-meta"><time dateTime={activity.recordedAt}>{new Date(activity.recordedAt).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })}</time><span>{activity.userEmail}</span></div><p>{activity.note}</p></li>)}</ol> : <p className="follow-up-empty">No follow-up activity recorded.</p>}
@@ -339,11 +339,12 @@ function InquiryDetails({ session, inquiry, owners, onClose, onSave, onAddFollow
           {error && <p className="form-error" role="alert">{error}</p>}
           <div className="form-actions"><button className="button button-quiet" type="button" onClick={onClose}>Close</button><button className="button button-primary" type="submit" disabled={busy}>{busy ? "Saving…" : "Save changes"}</button></div>
         </form>
-        {canAddFollowUp ? <form className="follow-up-form" onSubmit={(event) => void submitFollowUp(event)}>
-          <label htmlFor="inquiry-note">Add follow-up</label><textarea id="inquiry-note" maxLength={2000} rows={3} required value={followUpNote} onChange={(event) => { setFollowUpNote(event.target.value); setFollowUpError(""); }} placeholder="Describe the interaction…" />
+        <form className="follow-up-form" onSubmit={(event) => void submitFollowUp(event)}>
+          <label htmlFor="inquiry-note">Add follow-up</label><textarea id="inquiry-note" maxLength={2000} rows={3} required disabled={!canAddFollowUp || followUpBusy} value={followUpNote} onChange={(event) => { setFollowUpNote(event.target.value); setFollowUpError(""); }} placeholder="Describe the interaction…" />
+          {!canAddFollowUp && <p className="follow-up-permission">Only the assigned reviewer can add follow-ups. Ask an admin to assign this inquiry to you.</p>}
           {followUpError && <p className="form-error" role="alert">{followUpError}</p>}
-          <div className="form-actions"><button className="button button-primary" type="submit" disabled={followUpBusy || !followUpNote.trim()}>{followUpBusy ? "Recording…" : "Add activity"}</button></div>
-        </form> : <p className="follow-up-permission">Only the assigned reviewer or an admin can record follow-up activity.</p>}
+          <div className="form-actions"><button className="button button-primary" type="submit" disabled={!canAddFollowUp || followUpBusy || !followUpNote.trim()}>{followUpBusy ? "Recording…" : "Add activity"}</button></div>
+        </form>
       </section>
     </div>
   );
