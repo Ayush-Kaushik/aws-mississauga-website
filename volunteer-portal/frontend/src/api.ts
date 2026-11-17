@@ -1,4 +1,4 @@
-import type { Session, TaskStatus, User, VolunteerTask } from "./types";
+import type { Inquiry, InquiryStatus, Session, TaskStatus, User, VolunteerTask } from "./types";
 
 const apiUrl = (import.meta.env.VITE_API_URL || "http://localhost:3001").replace(/\/$/, "");
 
@@ -22,6 +22,13 @@ export const api = {
     request<{ token: string; user: User }>("/auth/signin", undefined, {
       method: "POST",
       body: JSON.stringify({ email, password }),
+    }),
+  users: (token: string) => request<User[]>("/users", token),
+  inquiries: (token: string) => request<Inquiry[]>("/inquiries", token),
+  updateInquiry: (token: string, id: string, changes: { status: InquiryStatus; ownerId: string | null; followUpNote: string }) =>
+    request<Inquiry>(`/inquiries/${id}`, token, {
+      method: "PATCH",
+      body: JSON.stringify(changes),
     }),
   tasks: (token: string) => request<VolunteerTask[]>("/tasks", token),
   createTask: (token: string, title: string, description: string) =>

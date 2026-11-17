@@ -2,14 +2,17 @@ import { randomUUID } from "node:crypto";
 import cors from "cors";
 import express, { type NextFunction, type Request, type Response } from "express";
 
-type Role = "volunteer" | "admin";
+type Role = "volunteer" | "admin" | "member";
 type TaskStatus = "available" | "claimed" | "completed";
+type InquiryCategory = "volunteer" | "sponsor" | "speaker";
+type InquiryStatus = "new" | "in_progress" | "contacted" | "closed";
 
 interface User {
   id: string;
   email: string;
   password: string;
   role: Role;
+  inquiryCategories: InquiryCategory[];
 }
 
 interface VolunteerTask {
@@ -20,14 +23,28 @@ interface VolunteerTask {
   claimedBy: string | null;
 }
 
+interface Inquiry {
+  id: string;
+  category: InquiryCategory;
+  name: string;
+  email: string;
+  organization: string;
+  receivedAt: string;
+  message: string;
+  status: InquiryStatus;
+  ownerId: string | null;
+  followUpNote: string;
+}
+
 interface AuthenticatedRequest extends Request {
   user?: Omit<User, "password">;
 }
 
 const users: User[] = [
-  { id: "volunteer-alex", email: "alex.volunteer@example.com", password: "Volunteer123!", role: "volunteer" },
-  { id: "volunteer-sam", email: "sam.volunteer@example.com", password: "Volunteer123!", role: "volunteer" },
-  { id: "admin-1", email: "admin@example.com", password: "Admin123!", role: "admin" },
+  { id: "volunteer-alex", email: "alex.volunteer@example.com", password: "Volunteer123!", role: "volunteer", inquiryCategories: ["volunteer", "sponsor"] },
+  { id: "volunteer-sam", email: "sam.volunteer@example.com", password: "Volunteer123!", role: "volunteer", inquiryCategories: ["speaker"] },
+  { id: "admin-1", email: "admin@example.com", password: "Admin123!", role: "admin", inquiryCategories: [] },
+  { id: "member-1", email: "member@example.com", password: "Member123!", role: "member", inquiryCategories: [] },
 ];
 
 const tasks: VolunteerTask[] = [
@@ -35,6 +52,18 @@ const tasks: VolunteerTask[] = [
   { id: "task-speaker-support", title: "Speaker support", description: "Coordinate with the evening's speaker and help them get settled before the session.", status: "available", claimedBy: null },
   { id: "task-photo-recap", title: "Community photo recap", description: "Capture a few candid moments during the meetup for the post-event community recap.", status: "claimed", claimedBy: "volunteer-alex" },
   { id: "task-room-reset", title: "Room reset", description: "Help return the venue to its original layout after the meetup wraps up.", status: "completed", claimedBy: null },
+];
+
+const inquiries: Inquiry[] = [
+  { id: "inquiry-volunteer-priya", category: "volunteer", name: "Priya Shah", email: "priya.shah@example.com", organization: "", receivedAt: "2026-11-16", message: "I would love to help welcome attendees and support the next community meetup.", status: "new", ownerId: "volunteer-alex", followUpNote: "" },
+  { id: "inquiry-volunteer-marcus", category: "volunteer", name: "Marcus Lee", email: "marcus.lee@example.com", organization: "", receivedAt: "2026-11-14", message: "I have event photography experience and can help with the recap.", status: "in_progress", ownerId: "admin-1", followUpNote: "Asked about availability for the December event." },
+  { id: "inquiry-volunteer-elena", category: "volunteer", name: "Elena Rossi", email: "elena.rossi@example.com", organization: "", receivedAt: "2026-11-11", message: "I am interested in helping with check-in and event setup.", status: "contacted", ownerId: null, followUpNote: "" },
+  { id: "inquiry-sponsor-northstar", category: "sponsor", name: "Jordan Kim", email: "jordan.kim@northstar.io", organization: "Northstar Labs", receivedAt: "2026-11-15", message: "Our team is interested in sponsoring an upcoming meetup and meeting local cloud builders.", status: "in_progress", ownerId: "admin-1", followUpNote: "Sent the sponsorship overview; waiting for preferred dates." },
+  { id: "inquiry-sponsor-maple", category: "sponsor", name: "Aisha Patel", email: "aisha.patel@mapleworks.ca", organization: "MapleWorks", receivedAt: "2026-11-12", message: "Could you share the available sponsorship options for the winter series?", status: "new", ownerId: "volunteer-alex", followUpNote: "" },
+  { id: "inquiry-sponsor-orbit", category: "sponsor", name: "Noah Chen", email: "noah.chen@orbitdata.com", organization: "Orbit Data", receivedAt: "2026-11-08", message: "We would like to contribute refreshments for a future event.", status: "closed", ownerId: "admin-1", followUpNote: "Refreshment contribution confirmed for December." },
+  { id: "inquiry-speaker-fatima", category: "speaker", name: "Fatima Hassan", email: "fatima.hassan@example.com", organization: "CloudPath", receivedAt: "2026-11-16", message: "I can present a practical session on observability for serverless systems.", status: "new", ownerId: "volunteer-sam", followUpNote: "" },
+  { id: "inquiry-speaker-daniel", category: "speaker", name: "Daniel Wright", email: "daniel.wright@example.com", organization: "Independent", receivedAt: "2026-11-13", message: "Interested in sharing lessons from a recent cloud migration project.", status: "contacted", ownerId: "admin-1", followUpNote: "Requested a short abstract and speaker bio." },
+  { id: "inquiry-speaker-mei", category: "speaker", name: "Mei Tanaka", email: "mei.tanaka@example.com", organization: "Data North", receivedAt: "2026-11-10", message: "I would be happy to lead a hands-on introduction to data lakes on AWS.", status: "in_progress", ownerId: null, followUpNote: "" },
 ];
 
 const sessions = new Map<string, Omit<User, "password">>();
@@ -76,6 +105,10 @@ function taskId(request: Request): string {
   return request.params.id as string;
 }
 
+function canAccessInquiry(user: Omit<User, "password">, inquiry: Inquiry): boolean {
+  return user.role === "admin" || (user.role === "volunteer" && user.inquiryCategories.includes(inquiry.category));
+}
+
 app.post("/auth/signin", (request: Request, response: Response) => {
   const email = typeof request.body?.email === "string" ? request.body.email.trim().toLowerCase() : "";
   const password = typeof request.body?.password === "string" ? request.body.password : "";
@@ -86,9 +119,68 @@ app.post("/auth/signin", (request: Request, response: Response) => {
   }
 
   const token = randomUUID();
-  const safeUser = { id: user.id, email: user.email, role: user.role };
+  const safeUser = { id: user.id, email: user.email, role: user.role, inquiryCategories: user.inquiryCategories };
   sessions.set(token, safeUser);
   response.json({ token, user: safeUser });
+});
+
+app.get("/users", authenticate, (request: AuthenticatedRequest, response: Response) => {
+  if (request.user?.role === "member") {
+    response.status(403).json({ error: "Members do not have access to inquiry management." });
+    return;
+  }
+  response.json(users.map(({ id, email, role, inquiryCategories }) => ({ id, email, role, inquiryCategories })));
+});
+
+app.get("/inquiries", authenticate, (request: AuthenticatedRequest, response: Response) => {
+  const user = request.user!;
+  if (user.role === "member") {
+    response.status(403).json({ error: "Members do not have access to inquiries." });
+    return;
+  }
+  response.json(inquiries.filter((inquiry) => canAccessInquiry(user, inquiry)));
+});
+
+app.patch("/inquiries/:id", authenticate, (request: AuthenticatedRequest, response: Response) => {
+  const user = request.user!;
+  if (user.role === "member") {
+    response.status(403).json({ error: "Members do not have access to inquiries." });
+    return;
+  }
+  const inquiry = inquiries.find((candidate) => candidate.id === request.params.id);
+  if (!inquiry) {
+    response.status(404).json({ error: "Inquiry not found." });
+    return;
+  }
+  if (!canAccessInquiry(user, inquiry)) {
+    response.status(403).json({ error: "You do not have access to this inquiry category." });
+    return;
+  }
+
+  const { status, ownerId, followUpNote } = request.body ?? {};
+  if (status !== undefined) {
+    if (!["new", "in_progress", "contacted", "closed"].includes(status)) {
+      response.status(400).json({ error: "Status must be new, in_progress, contacted, or closed." });
+      return;
+    }
+  }
+  if (ownerId !== undefined) {
+    if (ownerId !== null && !users.some((candidate) => candidate.id === ownerId && (candidate.role === "admin" || (candidate.role === "volunteer" && candidate.inquiryCategories.includes(inquiry.category))))) {
+      response.status(400).json({ error: "Assigned owner must be an administrator or a reviewer assigned to this category." });
+      return;
+    }
+  }
+  if (followUpNote !== undefined) {
+    if (typeof followUpNote !== "string" || followUpNote.length > 2000) {
+      response.status(400).json({ error: "Follow-up note must be text up to 2000 characters." });
+      return;
+    }
+  }
+
+  if (status !== undefined) inquiry.status = status as InquiryStatus;
+  if (ownerId !== undefined) inquiry.ownerId = ownerId;
+  if (followUpNote !== undefined) inquiry.followUpNote = followUpNote.trim();
+  response.json(inquiry);
 });
 
 app.get("/tasks", authenticate, (request: AuthenticatedRequest, response: Response) => {
