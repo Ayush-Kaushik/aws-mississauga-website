@@ -1,4 +1,4 @@
-import type { Inquiry, InquiryStatus, Session, TaskStatus, User, VolunteerTask } from "./types";
+import type { FollowUpActivity, Inquiry, InquiryStatus, Session, TaskStatus, User, VolunteerTask } from "./types";
 
 const apiUrl = (import.meta.env.VITE_API_URL || "http://localhost:3001").replace(/\/$/, "");
 
@@ -24,11 +24,27 @@ export const api = {
       body: JSON.stringify({ email, password }),
     }),
   users: (token: string) => request<User[]>("/users", token),
+  inquiryCategories: (token: string) => request<string[]>("/inquiry-categories", token),
+  createInquiryCategory: (token: string, category: string) =>
+    request<{ category: string }>("/inquiry-categories", token, {
+      method: "POST",
+      body: JSON.stringify({ category }),
+    }),
+  setReviewerCategories: (token: string, userId: string, inquiryCategories: string[]) =>
+    request<User>(`/users/${userId}/inquiry-categories`, token, {
+      method: "PUT",
+      body: JSON.stringify({ inquiryCategories }),
+    }),
   inquiries: (token: string) => request<Inquiry[]>("/inquiries", token),
-  updateInquiry: (token: string, id: string, changes: { status: InquiryStatus; ownerId: string | null; followUpNote: string }) =>
+  updateInquiry: (token: string, id: string, changes: { status: InquiryStatus; ownerId: string | null }) =>
     request<Inquiry>(`/inquiries/${id}`, token, {
       method: "PATCH",
       body: JSON.stringify(changes),
+    }),
+  addFollowUp: (token: string, id: string, note: string) =>
+    request<FollowUpActivity>(`/inquiries/${id}/follow-ups`, token, {
+      method: "POST",
+      body: JSON.stringify({ note }),
     }),
   tasks: (token: string) => request<VolunteerTask[]>("/tasks", token),
   createTask: (token: string, title: string, description: string) =>

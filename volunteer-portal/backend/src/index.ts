@@ -4,7 +4,7 @@ import express, { type NextFunction, type Request, type Response } from "express
 
 type Role = "volunteer" | "admin" | "member";
 type TaskStatus = "available" | "claimed" | "completed";
-type InquiryCategory = "volunteer" | "sponsor" | "speaker";
+type InquiryCategory = string;
 type InquiryStatus = "new" | "in_progress" | "contacted" | "closed";
 
 interface User {
@@ -23,6 +23,14 @@ interface VolunteerTask {
   claimedBy: string | null;
 }
 
+interface FollowUpActivity {
+  id: string;
+  recordedAt: string;
+  userId: string;
+  userEmail: string;
+  note: string;
+}
+
 interface Inquiry {
   id: string;
   category: InquiryCategory;
@@ -33,7 +41,7 @@ interface Inquiry {
   message: string;
   status: InquiryStatus;
   ownerId: string | null;
-  followUpNote: string;
+  followUps: FollowUpActivity[];
 }
 
 interface AuthenticatedRequest extends Request {
@@ -47,6 +55,8 @@ const users: User[] = [
   { id: "member-1", email: "member@example.com", password: "Member123!", role: "member", inquiryCategories: [] },
 ];
 
+const inquiryCategories: InquiryCategory[] = ["volunteer", "sponsor", "speaker"];
+
 const tasks: VolunteerTask[] = [
   { id: "task-welcome-table", title: "Welcome table host", description: "Greet attendees, help them check in, and point first-time guests toward the refreshments.", status: "available", claimedBy: null },
   { id: "task-speaker-support", title: "Speaker support", description: "Coordinate with the evening's speaker and help them get settled before the session.", status: "available", claimedBy: null },
@@ -55,15 +65,24 @@ const tasks: VolunteerTask[] = [
 ];
 
 const inquiries: Inquiry[] = [
-  { id: "inquiry-volunteer-priya", category: "volunteer", name: "Priya Shah", email: "priya.shah@example.com", organization: "", receivedAt: "2026-11-16", message: "I would love to help welcome attendees and support the next community meetup.", status: "new", ownerId: "volunteer-alex", followUpNote: "" },
-  { id: "inquiry-volunteer-marcus", category: "volunteer", name: "Marcus Lee", email: "marcus.lee@example.com", organization: "", receivedAt: "2026-11-14", message: "I have event photography experience and can help with the recap.", status: "in_progress", ownerId: "admin-1", followUpNote: "Asked about availability for the December event." },
-  { id: "inquiry-volunteer-elena", category: "volunteer", name: "Elena Rossi", email: "elena.rossi@example.com", organization: "", receivedAt: "2026-11-11", message: "I am interested in helping with check-in and event setup.", status: "contacted", ownerId: null, followUpNote: "" },
-  { id: "inquiry-sponsor-northstar", category: "sponsor", name: "Jordan Kim", email: "jordan.kim@northstar.io", organization: "Northstar Labs", receivedAt: "2026-11-15", message: "Our team is interested in sponsoring an upcoming meetup and meeting local cloud builders.", status: "in_progress", ownerId: "admin-1", followUpNote: "Sent the sponsorship overview; waiting for preferred dates." },
-  { id: "inquiry-sponsor-maple", category: "sponsor", name: "Aisha Patel", email: "aisha.patel@mapleworks.ca", organization: "MapleWorks", receivedAt: "2026-11-12", message: "Could you share the available sponsorship options for the winter series?", status: "new", ownerId: "volunteer-alex", followUpNote: "" },
-  { id: "inquiry-sponsor-orbit", category: "sponsor", name: "Noah Chen", email: "noah.chen@orbitdata.com", organization: "Orbit Data", receivedAt: "2026-11-08", message: "We would like to contribute refreshments for a future event.", status: "closed", ownerId: "admin-1", followUpNote: "Refreshment contribution confirmed for December." },
-  { id: "inquiry-speaker-fatima", category: "speaker", name: "Fatima Hassan", email: "fatima.hassan@example.com", organization: "CloudPath", receivedAt: "2026-11-16", message: "I can present a practical session on observability for serverless systems.", status: "new", ownerId: "volunteer-sam", followUpNote: "" },
-  { id: "inquiry-speaker-daniel", category: "speaker", name: "Daniel Wright", email: "daniel.wright@example.com", organization: "Independent", receivedAt: "2026-11-13", message: "Interested in sharing lessons from a recent cloud migration project.", status: "contacted", ownerId: "admin-1", followUpNote: "Requested a short abstract and speaker bio." },
-  { id: "inquiry-speaker-mei", category: "speaker", name: "Mei Tanaka", email: "mei.tanaka@example.com", organization: "Data North", receivedAt: "2026-11-10", message: "I would be happy to lead a hands-on introduction to data lakes on AWS.", status: "in_progress", ownerId: null, followUpNote: "" },
+  { id: "inquiry-volunteer-priya", category: "volunteer", name: "Priya Shah", email: "priya.shah@example.com", organization: "", receivedAt: "2026-11-16", message: "I would love to help welcome attendees and support the next community meetup.", status: "new", ownerId: "volunteer-alex", followUps: [] },
+  { id: "inquiry-volunteer-marcus", category: "volunteer", name: "Marcus Lee", email: "marcus.lee@example.com", organization: "", receivedAt: "2026-11-14", message: "I have event photography experience and can help with the recap.", status: "in_progress", ownerId: "admin-1", followUps: [
+    { id: "followup-marcus-1", recordedAt: "2026-11-15T16:30:00.000Z", userId: "admin-1", userEmail: "admin@example.com", note: "Asked about availability for the December event." },
+    { id: "followup-marcus-2", recordedAt: "2026-11-16T18:10:00.000Z", userId: "volunteer-alex", userEmail: "alex.volunteer@example.com", note: "Confirmed availability for the event setup window." },
+  ] },
+  { id: "inquiry-volunteer-elena", category: "volunteer", name: "Elena Rossi", email: "elena.rossi@example.com", organization: "", receivedAt: "2026-11-11", message: "I am interested in helping with check-in and event setup.", status: "contacted", ownerId: null, followUps: [] },
+  { id: "inquiry-sponsor-northstar", category: "sponsor", name: "Jordan Kim", email: "jordan.kim@northstar.io", organization: "Northstar Labs", receivedAt: "2026-11-15", message: "Our team is interested in sponsoring an upcoming meetup and meeting local cloud builders.", status: "in_progress", ownerId: "admin-1", followUps: [
+    { id: "followup-northstar-1", recordedAt: "2026-11-16T15:00:00.000Z", userId: "admin-1", userEmail: "admin@example.com", note: "Sent the sponsorship overview; waiting for preferred dates." },
+  ] },
+  { id: "inquiry-sponsor-maple", category: "sponsor", name: "Aisha Patel", email: "aisha.patel@mapleworks.ca", organization: "MapleWorks", receivedAt: "2026-11-12", message: "Could you share the available sponsorship options for the winter series?", status: "new", ownerId: "volunteer-alex", followUps: [] },
+  { id: "inquiry-sponsor-orbit", category: "sponsor", name: "Noah Chen", email: "noah.chen@orbitdata.com", organization: "Orbit Data", receivedAt: "2026-11-08", message: "We would like to contribute refreshments for a future event.", status: "closed", ownerId: "admin-1", followUps: [
+    { id: "followup-orbit-1", recordedAt: "2026-11-09T14:20:00.000Z", userId: "admin-1", userEmail: "admin@example.com", note: "Refreshment contribution confirmed for December." },
+  ] },
+  { id: "inquiry-speaker-fatima", category: "speaker", name: "Fatima Hassan", email: "fatima.hassan@example.com", organization: "CloudPath", receivedAt: "2026-11-16", message: "I can present a practical session on observability for serverless systems.", status: "new", ownerId: "volunteer-sam", followUps: [] },
+  { id: "inquiry-speaker-daniel", category: "speaker", name: "Daniel Wright", email: "daniel.wright@example.com", organization: "Independent", receivedAt: "2026-11-13", message: "Interested in sharing lessons from a recent cloud migration project.", status: "contacted", ownerId: "admin-1", followUps: [
+    { id: "followup-daniel-1", recordedAt: "2026-11-14T17:45:00.000Z", userId: "admin-1", userEmail: "admin@example.com", note: "Requested a short abstract and speaker bio." },
+  ] },
+  { id: "inquiry-speaker-mei", category: "speaker", name: "Mei Tanaka", email: "mei.tanaka@example.com", organization: "Data North", receivedAt: "2026-11-10", message: "I would be happy to lead a hands-on introduction to data lakes on AWS.", status: "in_progress", ownerId: null, followUps: [] },
 ];
 
 const sessions = new Map<string, Omit<User, "password">>();
@@ -132,6 +151,47 @@ app.get("/users", authenticate, (request: AuthenticatedRequest, response: Respon
   response.json(users.map(({ id, email, role, inquiryCategories }) => ({ id, email, role, inquiryCategories })));
 });
 
+app.get("/inquiry-categories", authenticate, (request: AuthenticatedRequest, response: Response) => {
+  if (request.user?.role === "member") {
+    response.status(403).json({ error: "Members do not have access to inquiry management." });
+    return;
+  }
+  response.json(inquiryCategories);
+});
+
+app.post("/inquiry-categories", authenticate, requireRole("admin"), (request: Request, response: Response) => {
+  const category = typeof request.body?.category === "string" ? request.body.category.trim() : "";
+  if (!category || category.length > 50 || !/^[\p{L}\p{N}][\p{L}\p{N} &'_-]*$/u.test(category)) {
+    response.status(400).json({ error: "Category must be 1-50 letters, numbers, spaces, apostrophes, ampersands, underscores, or hyphens." });
+    return;
+  }
+  if (inquiryCategories.some((existing) => existing.toLocaleLowerCase() === category.toLocaleLowerCase())) {
+    response.status(409).json({ error: "That category already exists." });
+    return;
+  }
+  inquiryCategories.push(category);
+  response.status(201).json({ category });
+});
+
+app.put("/users/:id/inquiry-categories", authenticate, requireRole("admin"), (request: Request, response: Response) => {
+  const user = users.find((candidate) => candidate.id === request.params.id);
+  if (!user || user.role !== "volunteer") {
+    response.status(404).json({ error: "Volunteer reviewer not found." });
+    return;
+  }
+  const requestedCategories = request.body?.inquiryCategories;
+  if (!Array.isArray(requestedCategories) || requestedCategories.some((category) => typeof category !== "string" || !inquiryCategories.includes(category))) {
+    response.status(400).json({ error: "Assigned categories must be selected from the current inquiry categories." });
+    return;
+  }
+
+  user.inquiryCategories = [...new Set(requestedCategories)];
+  for (const [token, sessionUser] of sessions) {
+    if (sessionUser.id === user.id) sessions.set(token, { ...sessionUser, inquiryCategories: user.inquiryCategories });
+  }
+  response.json({ id: user.id, email: user.email, role: user.role, inquiryCategories: user.inquiryCategories });
+});
+
 app.get("/inquiries", authenticate, (request: AuthenticatedRequest, response: Response) => {
   const user = request.user!;
   if (user.role === "member") {
@@ -157,7 +217,7 @@ app.patch("/inquiries/:id", authenticate, (request: AuthenticatedRequest, respon
     return;
   }
 
-  const { status, ownerId, followUpNote } = request.body ?? {};
+  const { status, ownerId } = request.body ?? {};
   if (status !== undefined) {
     if (!["new", "in_progress", "contacted", "closed"].includes(status)) {
       response.status(400).json({ error: "Status must be new, in_progress, contacted, or closed." });
@@ -169,18 +229,55 @@ app.patch("/inquiries/:id", authenticate, (request: AuthenticatedRequest, respon
       response.status(400).json({ error: "Assigned owner must be an administrator or a reviewer assigned to this category." });
       return;
     }
-  }
-  if (followUpNote !== undefined) {
-    if (typeof followUpNote !== "string" || followUpNote.length > 2000) {
-      response.status(400).json({ error: "Follow-up note must be text up to 2000 characters." });
-      return;
+    if (user.role === "volunteer" && ownerId !== inquiry.ownerId) {
+      const selfAssigningUnassignedInquiry = inquiry.ownerId === null && ownerId === user.id;
+      const unassigningOwnInquiry = inquiry.ownerId === user.id && ownerId === null;
+      if (!selfAssigningUnassignedInquiry && !unassigningOwnInquiry) {
+        response.status(403).json({ error: "Reviewers can only assign unassigned inquiries to themselves. Only admins can reassign an inquiry." });
+        return;
+      }
     }
   }
-
   if (status !== undefined) inquiry.status = status as InquiryStatus;
   if (ownerId !== undefined) inquiry.ownerId = ownerId;
-  if (followUpNote !== undefined) inquiry.followUpNote = followUpNote.trim();
   response.json(inquiry);
+});
+
+app.post("/inquiries/:id/follow-ups", authenticate, (request: AuthenticatedRequest, response: Response) => {
+  const user = request.user!;
+  if (user.role === "member") {
+    response.status(403).json({ error: "Members do not have access to inquiries." });
+    return;
+  }
+  const inquiry = inquiries.find((candidate) => candidate.id === request.params.id);
+  if (!inquiry) {
+    response.status(404).json({ error: "Inquiry not found." });
+    return;
+  }
+  if (!canAccessInquiry(user, inquiry)) {
+    response.status(403).json({ error: "You do not have access to this inquiry category." });
+    return;
+  }
+  if (user.role === "volunteer" && inquiry.ownerId !== user.id) {
+    response.status(403).json({ error: "Only the assigned reviewer or an admin can record follow-up activity." });
+    return;
+  }
+
+  const note = typeof request.body?.note === "string" ? request.body.note.trim() : "";
+  if (!note || note.length > 2000) {
+    response.status(400).json({ error: "A follow-up note of up to 2000 characters is required." });
+    return;
+  }
+
+  const activity: FollowUpActivity = {
+    id: randomUUID(),
+    recordedAt: new Date().toISOString(),
+    userId: user.id,
+    userEmail: user.email,
+    note,
+  };
+  inquiry.followUps.push(activity);
+  response.status(201).json(activity);
 });
 
 app.get("/tasks", authenticate, (request: AuthenticatedRequest, response: Response) => {

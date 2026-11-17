@@ -45,8 +45,12 @@ This mock authentication is for local development only. Tokens are opaque in-mem
 
 - `POST /auth/signin`
 - `GET /users` (authenticated)
+- `GET /inquiry-categories` (authenticated)
+- `POST /inquiry-categories` (admin; create a category)
+- `PUT /users/:id/inquiry-categories` (admin; replace a volunteer reviewer's category assignments)
 - `GET /inquiries` (authenticated)
-- `PATCH /inquiries/:id` (authenticated; update status, assigned owner, or follow-up note)
+- `PATCH /inquiries/:id` (authenticated; update status or assigned owner)
+- `POST /inquiries/:id/follow-ups` (authenticated; append a timestamped note attributed to the signed-in user)
 - `GET /tasks`
 - `POST /tasks` (admin)
 - `PUT /tasks/:id` (admin)
@@ -55,4 +59,4 @@ This mock authentication is for local development only. Tokens are opaque in-mem
 - `PATCH /tasks/:id/unclaim` (volunteer)
 - `PATCH /tasks/:id/status` (admin)
 
-All endpoints except sign-in require `Authorization: Bearer <token>`. Inquiry access is role-scoped: admins can access every category, volunteer reviewers can access only their assigned categories, and members have no inquiry access. Reviewers can assign inquiries only to an admin or a reviewer assigned to that category. Volunteer task lists are filtered by the authenticated user. Admins can transition an already-claimed task to `claimed`, but cannot turn an unassigned task into a claimed task; the claimed status always requires a volunteer identity. Inquiry changes are shared by authorized signed-in users for the lifetime of the backend process.
+All endpoints except sign-in require `Authorization: Bearer <token>`. Inquiry access is role-scoped: admins can access every category, volunteer reviewers can access only their assigned categories, and members have no inquiry access. Admins can create inquiry categories and assign or remove multiple categories for each volunteer reviewer; multiple reviewers may share a category. In the dashboard, only admins see the inquiry assignment control; reviewers can see the assigned manager but cannot edit that field. Reviewers can add follow-up activity only to inquiries assigned to them; admins can add activity to any inquiry. Follow-up activity records include the server timestamp and signed-in user, are shown newest first, and remain in memory for the lifetime of the backend process. Volunteer task lists are filtered by the authenticated user. Admins can transition an already-claimed task to `claimed`, but cannot turn an unassigned task into a claimed task; the claimed status always requires a volunteer identity.

@@ -21,8 +21,16 @@ export interface VolunteerTask {
   claimedBy: string | null;
 }
 
-export type InquiryCategory = "volunteer" | "sponsor" | "speaker";
+export type InquiryCategory = string;
 export type InquiryStatus = "new" | "in_progress" | "contacted" | "closed";
+
+export interface FollowUpActivity {
+  id: string;
+  recordedAt: string;
+  userId: string;
+  userEmail: string;
+  note: string;
+}
 
 export interface Inquiry {
   id: string;
@@ -34,5 +42,5 @@ export interface Inquiry {
   message: string;
   status: InquiryStatus;
   ownerId: string | null;
-  followUpNote: string;
+  followUps: FollowUpActivity[];
 }
